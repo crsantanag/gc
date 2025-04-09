@@ -1,0 +1,57 @@
+<%= form_with(model: deposit) do |form| %>
+  <% if deposit.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(deposit.errors.count, "error") %> prohibited this deposit from being saved:</h2>
+
+      <ul>
+        <% deposit.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :date, style: "display: block" %>
+    <%= form.date_field :date %>
+  </div>
+
+  <div>
+    <%= form.label :amount, style: "display: block" %>
+    <%= form.number_field :amount %>
+  </div>
+
+  <div>
+    <%= form.label :comment, style: "display: block" %>
+    <%= form.text_field :comment %>
+  </div>
+
+  <div>
+    <%= form.label :tipo_ingreso, style: "display: block" %>
+    <%= form.number_field :tipo_ingreso %>
+  </div>
+
+  <div>
+    <%= form.label :mes, style: "display: block" %>
+    <%= form.number_field :mes %>
+  </div>
+
+  <div>
+    <%= form.label :ano, style: "display: block" %>
+    <%= form.number_field :ano %>
+  </div>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :apartment_id, style: "display: block" %>
+    <%= form.text_field :apartment_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
