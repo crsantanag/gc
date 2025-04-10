@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
-  # before_action :check_owner, only: [ :new, :create ]
   skip_before_action :require_no_authentication, only: [ :new, :create ]
+  before_action :authorize_admin, only: [ :new, :create ]
 
   before_action :configure_sign_up_params, only: [ :create ]
   before_action :configure_account_update_params, only: [ :update ]
@@ -57,8 +57,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
 
-  def check_owner
-    unless user_signed_in? && current_user.role == "admin"
+  def authorize_admin
+    unless user_signed_in? && current_user.admin?
         flash[:alert]= "NO ESTÁ AUTORIZADO PARA REALIZAR ESTA ACCIÓN"
         redirect_to root_path
     end

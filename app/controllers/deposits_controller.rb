@@ -1,4 +1,6 @@
 class DepositsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :require_year
   before_action :set_deposit, only: %i[ show edit update destroy ]
 
   # GET /deposits or /deposits.json

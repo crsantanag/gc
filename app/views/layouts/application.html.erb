@@ -27,6 +27,12 @@
 
       <div style="margin-top: 80px">
 
+        <% flash.each do |key, value| %>
+          <div class="col-12 w-md-100 alert alert-<%= key == "notice" ? "success" : "danger" %> text-center">
+            <strong><%= value %></strong>
+          </div>
+        <% end %>
+
         <%= yield %>
 
       </div>

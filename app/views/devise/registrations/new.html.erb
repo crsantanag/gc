@@ -28,6 +28,20 @@
     <%= f.text_field :name, required: true, class: "ps-2 col-11 col-md-6 border border-2 border-secondary-subtle rounded", style:"height: 35px" %>
   </div>
  
+  <div class="my-2">
+    <%= f.label :role, "Rol", class: "col-6" %><br>
+
+    <div class="form-check form-check-inline">
+      <%= f.radio_button :role, "normal", checked: true, class: "form-check-input" %>
+      <%= f.label :role_normal, "Normal", class: "form-check-label" %>
+    </div>
+
+    <div class="form-check form-check-inline">
+      <%= f.radio_button :role, "admin", class: "form-check-input" %>
+      <%= f.label :role_admin, "Admin", class: "form-check-label" %>
+    </div>
+  </div>
+
   <div class="actions">
      <%= f.submit "Registrar", class: "btn btn-secondary col-5 col-md-2 mt-2 mb-3" %>
   </div>
