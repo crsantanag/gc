@@ -2,16 +2,14 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
-  set_current_tenant_through_filter # <-- ESTA ES LA LÍNEA CLAVE
-
-  before_action :set_current_user_as_tenant, unless: :devise_controller?
+  before_action :require_year, if: :year_required_controller?
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   helper_method :selected_year, :selected_year?
 
-  def authorize_request(kind = nil)
-    unless kind.include?(current_user.role)
-      flash[:alert] = "NO ESTÁ AUTORIZADO PARA REALIZAR ESTA ACCION"
+  def authorize_request
+    unless current_user.admin?
+      flash[:alert] = "NO ESTÁ AUTORIZADO PARA REALIZAR ESTA ACCIÓN"
       redirect_to root_path
     end
   end
@@ -31,15 +29,11 @@ class ApplicationController < ActionController::Base
     root_path
   end
 
-  def set_current_user_as_tenant
-    set_current_tenant(current_user) if user_signed_in?
-  end
-
   private
 
   def require_year
     if user_signed_in? && !session[:selected_year].present?
-      flash[:alert] = "Debes seleccionar un año antes de continuar."
+      flash[:alert] = "SE DEBE SELECCIONAR UN AÑO ANTES DE CONTINUAR"
       redirect_to root_path
     end
   end
@@ -54,5 +48,9 @@ class ApplicationController < ActionController::Base
 
   def year_selector_page?
     controller_name == "pages" && action_name == "index"
+  end
+
+  def year_required_controller?
+    %w[deposits bills balance].include?(controller_name)
   end
 end

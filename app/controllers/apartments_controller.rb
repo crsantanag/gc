@@ -4,7 +4,7 @@ class ApartmentsController < ApplicationController
 
   # GET /apartments or /apartments.json
   def index
-    @apartments = Apartment.all
+    @apartments = current_user.apartments
   end
 
   # GET /apartments/1 or /apartments/1.json
@@ -13,7 +13,7 @@ class ApartmentsController < ApplicationController
 
   # GET /apartments/new
   def new
-    @apartment = Apartment.new
+    @apartment = current_user.apartments.new
   end
 
   # GET /apartments/1/edit
@@ -22,11 +22,13 @@ class ApartmentsController < ApplicationController
 
   # POST /apartments or /apartments.json
   def create
-    @apartment = Apartment.new(apartment_params)
+    @apartment = current_user.apartments.new(apartment_params)
+    @apartment.user_id = current_user.id
 
     respond_to do |format|
       if @apartment.save
-        format.html { redirect_to @apartment, notice: "Apartment was successfully created." }
+        flash[:notice] = "DEPARTAMENTO CREADO"
+        format.html { redirect_to @apartment }
         format.json { render :show, status: :created, location: @apartment }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -39,7 +41,8 @@ class ApartmentsController < ApplicationController
   def update
     respond_to do |format|
       if @apartment.update(apartment_params)
-        format.html { redirect_to @apartment, notice: "Apartment was successfully updated." }
+        flash[:notice] = "DEPARTAMENTO ACTUALIZADO"
+        format.html { redirect_to @apartment }
         format.json { render :show, status: :ok, location: @apartment }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -53,7 +56,8 @@ class ApartmentsController < ApplicationController
     @apartment.destroy!
 
     respond_to do |format|
-      format.html { redirect_to apartments_path, status: :see_other, notice: "Apartment was successfully destroyed." }
+      flash[:notice] = "DEPARTAMENTO ELIMINADO"
+      format.html { redirect_to apartments_path, status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -61,7 +65,7 @@ class ApartmentsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_apartment
-      @apartment = Apartment.find(params[:id])
+      @apartment = current_user.apartments.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.

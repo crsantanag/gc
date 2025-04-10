@@ -1,17 +1,10 @@
 <div id="<%= dom_id apartment %>">
-  <p>
-    <strong>Number:</strong>
-    <%= apartment.number %>
-  </p>
 
-  <p>
-    <strong>Description:</strong>
-    <%= apartment.description %>
-  </p>
+  <tr class="table-light">
 
-  <p>
-    <strong>User:</strong>
-    <%= apartment.user_id %>
-  </p>
+    <td class="col-1 text-center" scope="row"> <%= link_to apartment.number, apartment, class: "btn btn-primary btn-sm" %> </td>
+    <td class="col-8 text-start" scope="row"> <%= apartment.description %> </td>
+
+  </tr>
 
 </div>

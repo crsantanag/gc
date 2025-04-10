@@ -1,16 +1,25 @@
-<p style="color: green"><%= notice %></p>
-
 <% content_for :title, "Apartments" %>
 
-<h1>Apartments</h1>
+<h1>Departamentos</h1>
+
+<%= link_to "Crear departamento", new_apartment_path, class:"mb-3 fs-5 btn btn-info" %>
 
 <div id="apartments">
-  <% @apartments.each do |apartment| %>
-    <%= render apartment %>
-    <p>
-      <%= link_to "Show this apartment", apartment %>
-    </p>
-  <% end %>
-</div>
 
-<%= link_to "New apartment", new_apartment_path %>
+      <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr class="table-primary">
+            <th class="text-center" scope="col">Número</th>
+            <th scope="col">Nombre</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @apartments.each do |apartment| %>
+            <%= render "apartment", apartment: apartment %>
+          <% end %>
+        </tbody>
+      </table>
+    </div> 
+
+</div>
