@@ -36,6 +36,7 @@
     <%= f.label :role, "Rol", class: "col-6" %><br>
 
     <% if current_user.admin? %>
+
       <div class="form-check form-check-inline">
         <%= f.radio_button :role, "normal", class: "form-check-input" %>
         <%= f.label :role_normal, "Normal", class: "form-check-label" %>

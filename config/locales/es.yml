@@ -1,0 +1,30 @@
+es:
+  devise:
+    sessions:
+      signed_in: "Sesión iniciada correctamente"
+      signed_out: "Sesión cerrada correctamente"
+    failure:
+      user:
+        not_found_in_database: "Email o contraseña inválidos"
+      invalid: "Email o contraseña inválidos"
+  activerecord:
+    attributes:
+      deposit:
+        tipo_ingreso:
+          ingreso_comun: "Gastos comunes"
+          ingreso_extraordinario: "Ingresos extraordinarios"
+          ingreso_otro: "Otros ingresos"
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d de %B"
+      long: "%d de %B de %Y"
+    month_names: [nil, "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+    abbr_month_names: [nil, "ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+    day_names: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"]
+    abbr_day_names: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"]
+    order:
+      - day
+      - month
+      - year
+

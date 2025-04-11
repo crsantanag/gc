@@ -11,47 +11,137 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :date, style: "display: block" %>
-    <%= form.date_field :date %>
+  <div class="mb-2">
+    <%= form.label :date, "Fecha" %><br>
+      <%if action_name == "new" %>
+        <%= form.date_field :date, value: Date.today, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px" %>
+      <% else %>
+        <%= form.date_field :date, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px" %>
+      <% end %>
+  </div>
+
+  <div class="my-2">
+    <%= form.label :apartment_id, "Departamento" %><br>
+    <%= form.collection_select :apartment_id, @apartments, :id, :number,
+        { prompt: "Seleccione un departamento" },
+        { class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style: "height: 35px" } %>
+  </div>
+
+  Concepto del Ingreso<br>
+  <div class="btn-group border border-2" data-toggle="buttons">
+    <%= form.radio_button :tipo_ingreso, "ingreso_comun", checked: true, id: "tipo_ingreso_comun" %>
+    <%= form.label :tipo_ingreso, "Cuota mensual", value: "ingreso_comun", class: "btn", for: "tipo_ingreso_comun" %>
+
+    <%= form.radio_button :tipo_ingreso, "ingreso_extraordinario", id: "tipo_ingreso_extraordinario" %>
+    <%= form.label :tipo_ingreso, "Cuota extraordinaria", value: "ingreso_extraordinario", class: "btn", for: "tipo_ingreso_extraordinario" %>
+
+    <%= form.radio_button :tipo_ingreso, "ingreso_otro", id: "tipo_ingreso_otro" %>
+    <%= form.label :tipo_ingreso, "Otro", value: "ingreso_otro", class: "btn", for: "tipo_ingreso_otro" %>
+  </div>
+
+
+  <div class="field my-2">
+    <%= form.label :comment, "Comentario" %><br />
+    <%= form.text_area :comment, required: true, class: "ps-2 col-11 col-sm-6 border border-2 border-secondary-subtle", rows: 3 %>
+  </div>
+
+  <!-- Contenedor de los campos Mes y Año -->
+  <div id="date_fields">
+    <div class="my-2">
+      <%= form.label :mes, "Mes" %>
+      <%= form.select :mes, options_for_select(Deposit::MONTHS, form.object.mes), { prompt: "Seleccione un mes" }, { class: "ps-2 col-6 col-sm-2 border border-2 border-secondary-subtle rounded", style: "height: 35px"} %>
+    </div>
+
+    <div class="my-2">
+      <%= form.label :ano, "Año" %>
+      <%= form.select :ano, options_for_select(Deposit::YEARS, form.object.ano), { prompt: "Seleccione un año" }, { class: "ps-2 col-6 col-sm-2 border border-2 border-secondary-subtle rounded", style: "height: 35px"} %>
+    </div>
+  </div>
+
+  <div class="my-2">
+    <%= form.label :amount, "Cantidad" %><br>
+    <%= form.text_field :amount, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px", id: "amount_input", data: { original_value: form.object.amount.present? ? form.object.amount.to_s.gsub(/\D/, "") : ""
+    }  %>
   </div>
 
   <div>
-    <%= form.label :amount, style: "display: block" %>
-    <%= form.number_field :amount %>
+    <% if action_name == "new" %>
+      <%= form.submit "Ingresar", class: "btn btn-info col-4 col-sm-1" %>
+      <div class="py-2">
+        <%= link_to "Regresar", deposits_path, class: "btn btn-light border border-2 btn-ancho col-4 col-sm-1" %>
+      </div>
+    <% else %>
+      <%= form.submit "Actualizar", class: "btn btn-info col-4 col-sm-1" %>
+      <div class="py-2">
+        <%= link_to "Regresar", @deposits, class: "btn btn-light border border-2 btn-ancho col-4 col-sm-1" %>
+      </div>
+     <% end %>
   </div>
 
-  <div>
-    <%= form.label :comment, style: "display: block" %>
-    <%= form.text_field :comment %>
-  </div>
-
-  <div>
-    <%= form.label :tipo_ingreso, style: "display: block" %>
-    <%= form.number_field :tipo_ingreso %>
-  </div>
-
-  <div>
-    <%= form.label :mes, style: "display: block" %>
-    <%= form.number_field :mes %>
-  </div>
-
-  <div>
-    <%= form.label :ano, style: "display: block" %>
-    <%= form.number_field :ano %>
-  </div>
-
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
-  </div>
-
-  <div>
-    <%= form.label :apartment_id, style: "display: block" %>
-    <%= form.text_field :apartment_id %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
 <% end %>
+
+<script>
+  function initDepositFormScript() {
+    // === CAMPOS DE FECHA DEPENDIENTES DEL RADIO ===
+    const dateFields = document.getElementById("date_fields");
+    const tipoIngresoRadios = document.querySelectorAll("input[name='deposit[tipo_ingreso]']");
+
+    if (dateFields && tipoIngresoRadios.length > 0 && !dateFields.dataset.listenerAdded) {
+      console.log("Escuchando en RADIO");
+      
+      // Previene registrar múltiples veces
+      dateFields.dataset.listenerAdded = true;
+
+      function toggleDateFields() {
+        const selectedRadio = Array.from(tipoIngresoRadios).find(radio => radio.checked);
+        const tipo = selectedRadio ? selectedRadio.value : null;
+
+        dateFields.style.display = tipo === "ingreso_comun" ? "block" : "none";
+      }
+
+      tipoIngresoRadios.forEach(radio => {
+        radio.addEventListener("change", toggleDateFields);
+      });
+
+      toggleDateFields();
+    }
+
+    // === CANTIDAD (AMOUNT) ===
+    const amountInput = document.getElementById("amount_input");
+
+    if (amountInput && !amountInput.dataset.listenerAdded) {
+      console.log("Escuchando en CANTIDAD");
+
+      amountInput.dataset.listenerAdded = true;
+
+      const formatCL = (value) => {
+        const raw = value.replace(/\D/g, ""); // Solo números
+        return new Intl.NumberFormat("es-CL", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        }).format(raw);
+      };
+
+      if (amountInput.value) {
+        const rawValue = amountInput.value.replace(/\D/g, "");
+        amountInput.dataset.originalValue = rawValue;
+        amountInput.value = formatCL(rawValue);
+      }
+
+      amountInput.addEventListener("input", function () {
+        const rawValue = this.value.replace(/\D/g, "");
+        this.dataset.originalValue = rawValue;
+        this.value = formatCL(rawValue);
+      });
+
+      if (amountInput.form) {
+        amountInput.form.addEventListener("submit", function () {
+          amountInput.value = amountInput.dataset.originalValue;
+        });
+      }
+    }
+  }
+
+  document.addEventListener("turbo:load", initDepositFormScript);
+  document.addEventListener("turbo:render", initDepositFormScript);
+</script>

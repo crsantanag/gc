@@ -60,7 +60,6 @@ gem "devise"
 gem "faker"
 gem "wicked_pdf"
 gem "wkhtmltopdf-binary"
-# Roo can access the contents of various spreadsheet files. It can handle * OpenOffice * Excelx * LibreOffice * CSV
 gem "roo"
 gem "csv"
 gem "font-awesome-sass"

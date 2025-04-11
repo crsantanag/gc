@@ -5,7 +5,29 @@ class DepositsController < ApplicationController
 
   # GET /deposits or /deposits.json
   def index
-    @deposits = Deposit.all
+    # Año ya lo tengo definido
+
+    from_month = (params[:from_month] || 1).to_i
+    to_month = (params[:to_month] || 12).to_i
+    year = selected_year
+
+    @from_date = Date.new(year, from_month, 1)
+    @to_date = Date.new(year, to_month, -1) # úl
+
+    @deposits = current_user.deposits.includes(:apartment).where(date: @from_date..@to_date).order(:date)
+    @deposits_by_month = @deposits.group_by { |b| b.date.beginning_of_month }
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "Ingresos",
+               template: "deposits/index",
+               encoding: "UTF-8",
+               layout: "pdf",
+               orientation: "Portrait",
+               page_size: "Letter"
+      end
+    end
   end
 
   # GET /deposits/1 or /deposits/1.json
@@ -14,20 +36,27 @@ class DepositsController < ApplicationController
 
   # GET /deposits/new
   def new
-    @deposit = Deposit.new
+    @apartments = current_user.apartments
+    @deposit = current_user.deposits.new
+    @deposit.date ||= Date.today # Asigna la fecha de hoy
   end
 
   # GET /deposits/1/edit
   def edit
+    @apartments = current_user.apartments
+    @deposit = current_user.deposits.find(params[:id])
   end
 
   # POST /deposits or /deposits.json
   def create
-    @deposit = Deposit.new(deposit_params)
+    @apartments = current_user.apartments
+    @deposit = current_user.deposits.new(deposit_params)
+    @deposit.user_id = current_user.id
 
     respond_to do |format|
       if @deposit.save
-        format.html { redirect_to @deposit, notice: "Deposit was successfully created." }
+        flash[:notice] = "INGRESO REGISTRADO"
+        format.html { redirect_to deposits_path }
         format.json { render :show, status: :created, location: @deposit }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -40,7 +69,8 @@ class DepositsController < ApplicationController
   def update
     respond_to do |format|
       if @deposit.update(deposit_params)
-        format.html { redirect_to @deposit, notice: "Deposit was successfully updated." }
+        flash[:notice] = "INGRESO ACTUALIZADO"
+        format.html { redirect_to deposits_path  }
         format.json { render :show, status: :ok, location: @deposit }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -62,11 +92,11 @@ class DepositsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_deposit
-      @deposit = Deposit.find(params[:id])
+      @deposit = current_user.deposits.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def deposit_params
-      params.require(:deposit).permit(:date, :amount, :comment, :tipo_ingreso, :mes, :ano, :user_id, :apartment_id)
+      params.require(:deposit).permit(:date, :amount, :comment, :tipo_ingreso, :mes, :ano, :apartment_id)
     end
 end

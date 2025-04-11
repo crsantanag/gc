@@ -49,7 +49,7 @@ class PagesController < ApplicationController
 
     session[:balance_inicial] = ingresos - egresos
     flash[:notice] = "AÑO SELECCIONADO - #{year}"
-    redirect_to root_path
+    redirect_to request.referer || root_path
   end
 
   def page_params
