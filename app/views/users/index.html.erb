@@ -6,6 +6,9 @@
 <table class="table table-bordered table-hover">
   <thead class="table-light">
     <tr>
+      <th>Nombre comunidad</th>
+      <th>Tipo comunidad</th>
+      <th class="text-end">Saldo inicial</th>
       <th>Nombre</th>
       <th>Email</th>
       <th>Rol</th>
@@ -15,6 +18,9 @@
   <tbody>
     <% @users.each do |user| %>
       <tr>
+        <td><%= user.name_community %></td>
+        <td><%= user.type_community %></td>
+        <td class="text-end"><%= number_to_currency(user.saldo_inicial, unit: "$", delimiter: ".", precision: 0) %></td>
         <td><%= user.name %></td>
         <td><%= user.email %></td>
         <td><%= user.role.capitalize %></td>

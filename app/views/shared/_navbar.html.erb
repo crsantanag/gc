@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary px-auto px-md-10 mx-0 mt-3 mb-3 fixed-top border-top border-bottom border-3 border-info">
+<nav class="navbar navbar-expand-lg bg-body-tertiary px-auto px-md-10 mx-0 mt-0 mb-3 fixed-top border-bottom border-4 border-info">
   <div class="container-fluid">
 
     <strong class="ms-2 fs-5"> 
@@ -12,22 +12,29 @@
     <div class="collapse navbar-collapse gap-2 justify-content-start" id="navbarSupportedContent">
 
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
-        <% if user_signed_in? %>
-          <li class="nav-item col-6 col-md-auto ms-2 ms-sm-0">
-            <%= link_to "Departamentos", apartments_path, class:"nav-link text-start fs-5 btn btn-info" %>
-          </li>
-          <li class="nav-item col-12 col-md-auto ms-2 ms-sm-0">
-            <%= link_to "Ingresos", deposits_path, class:"nav-link text-start fs-5 btn btn-info" %>
-          </li>
-          <li class="nav-item col-12 col-md-auto ms-2 ms-sm-0">
-            <%= link_to "Egresos", bills_path, class:"nav-link text-start fs-5 btn btn-info" %>
-          </li>
-          <li class="nav-item col-12 col-md-auto ms-2 ms-sm-0">
-            <%= link_to "Balance", balance_path, class:"nav-link text-start fs-5 btn btn-info" %>
-          </li>
-        </ul>
-        <% end%>
-      </ul>
+  <% if user_signed_in? %>
+    <li class="nav-item col-6 col-md-auto ms-2 ms-sm-0">
+      <%= link_to "#{current_user.type_community}s".html_safe, apartments_path,
+          class: "nav-link text-start fs-5 btn #{current_page?(apartments_path) ? 'bg-info text-white' : 'btn-outline-info'}" %>
+    </li>
+
+    <li class="nav-item col-12 col-md-auto ms-2 ms-sm-0">
+      <%= link_to "Ingresos", deposits_path,
+          class: "nav-link text-start fs-5 btn #{current_page?(deposits_path) ? 'bg-info text-white' : 'btn-outline-info'}" %>
+    </li>
+
+    <li class="nav-item col-12 col-md-auto ms-2 ms-sm-0">
+      <%= link_to "Egresos", bills_path,
+          class: "nav-link text-start fs-5 btn #{current_page?(bills_path) ? 'bg-info text-white' : 'btn-outline-info'}" %>
+    </li>
+
+    <li class="nav-item col-12 col-md-auto ms-2 ms-sm-0">
+      <%= link_to "Balance", balance_path,
+          class: "nav-link text-start fs-5 btn #{current_page?(balance_path) ? 'bg-info text-white' : 'btn-outline-info'}" %>
+    </li>
+  <% end %>
+</ul>
+
 
       <% if user_signed_in? %>
      
@@ -37,7 +44,7 @@
               Año:
             </div>
             <%= number_field_tag :year, selected_year || Date.today.year, in: 2020..Date.today.year, class: "form-control form-control-sm me-2 border border-secondary-subtle border-2 rounded", style: "width: 5rem;" %>
-            <%= submit_tag "Enviar", class: "btn btn-secondary btn-sm" %>
+            <%= submit_tag "Seleccionar", class: "btn btn-secondary btn-sm" %>
           <% end %>
         </div>
       <% end%>

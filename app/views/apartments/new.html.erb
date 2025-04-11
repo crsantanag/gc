@@ -1,5 +1,5 @@
 <% content_for :title, "New apartment" %>
 
-<h1>Nuevo departamento</h1>
+<h1>Nuevo <%= current_user.type_community.downcase %> </h1>
 
 <%= render "form", apartment: @apartment %>

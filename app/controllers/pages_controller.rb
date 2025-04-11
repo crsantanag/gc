@@ -1,5 +1,7 @@
 class PagesController < ApplicationController
   skip_before_action :require_year, only: [ :index, :set_year ]
+  before_action :require_year, only: [ :balance ]
+
   def index
   end
   def exito
@@ -7,7 +9,7 @@ class PagesController < ApplicationController
   end
 
   def balance
-    @balance_inicial ||= 0
+    @balance_inicial = session[:balance_inicial]
 
     year = session[:selected_year]
     fecha_inicio = Date.new(year)
@@ -45,7 +47,7 @@ class PagesController < ApplicationController
     ingresos = current_user.deposits.where("date <= ?", fecha_corte).sum(:amount)
     egresos = current_user.bills.where("date <= ?", fecha_corte).sum(:amount)
 
-    session[:balance_inicial] = ingresos - egresos
+    session[:balance_inicial] = current_user.saldo_inicial + ingresos - egresos
     flash[:notice] = "AÑO SELECCIONADO - #{year}"
     redirect_to request.referer || root_path
   end

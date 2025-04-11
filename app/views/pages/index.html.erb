@@ -1,16 +1,32 @@
 
 <div class="container d-flex justify-content-center mx-0 px-0">
   <div class="row w-100">
-    <!-- Texto en pantallas pequeñas y columnas en pantallas más grandes -->
-    <div class="mb-2 mb-sm-0 mx-2 mx-sm-0 col-11 col-md-3 d-flex justify-content-center align-items-center text-center border border-secondary-subtle border-2 rounded">
-        <h1 class="mt-3 mt-sm-0">
-            <strong>C O N T R O L<br>D E<br>I N G R E S O S<br>Y<br>G A S T O S</strong><br>
-        </h1>
-        <br>
+
+    <!-- Columna izquierda -->
+    <div class="col-11 col-md-4 d-flex flex-column justify-content-center align-items-center text-center">
+      
+      <% if user_signed_in? %>
+        <h1><%= current_user.name_community %></h1>
+      <% end %>
+
+      <div class="d-flex justify-content-center align-items-center text-center border border-info border-2 rounded p-3" >
+        <h2 class="m-0">
+          <strong>
+            <span style="white-space: nowrap;">C O N T R O L</span>&nbsp;&nbsp;
+            <span style="white-space: nowrap;">D E</span>&nbsp;&nbsp;
+            <span style="white-space: nowrap;">I N G R E S O S</span>&nbsp;&nbsp;
+            <span style="white-space: nowrap;">Y</span> <br>
+            <span style="white-space: nowrap;">D E</span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span style="white-space: nowrap;">G A S T O S</span>
+          </strong>
+        </h2>
+      </div>
+
     </div>
-    <!-- Imagen en pantallas pequeñas y columnas en pantallas más grandes -->
-    <div class="col-12 col-md-9 d-flex justify-content-center">
-      <%= image_tag "portada.jpg", class: "img-fluid", alt: "Portada" %>
+
+    <!-- Imagen a la derecha -->
+    <div class="col-12 col-md-8 d-flex justify-content-center align-items-center m-0 p-0">
+      <%= image_tag "portada.jpg", class: "img-fluid m-0 p-0", alt: "Portada" %>
     </div>
   </div>
 </div>

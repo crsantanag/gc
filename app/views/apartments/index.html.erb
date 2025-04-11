@@ -1,8 +1,6 @@
 <% content_for :title, "Apartments" %>
 
-<h1>Departamentos</h1>
-
-<%= link_to "Crear departamento", new_apartment_path, class:"mb-3 fs-5 btn btn-info" %>
+<%= link_to "Crear ".html_safe + current_user.type_community.html_safe, new_apartment_path, class:"mb-3 fs-5 btn btn-info" %>
 
 <div id="apartments">
 

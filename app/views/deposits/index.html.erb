@@ -16,8 +16,6 @@
   .text-end { text-align: right; }
 </style>
 
-<h1>Ingresos</h1>
-
 <%= link_to "Registrar ingreso", new_deposit_path, class:"mb-3 col-6 col-sm-4 col-md-2 col-lg-2 btn btn-info" %>
 
 <h2> Detalle de ingresos</h2>
@@ -32,13 +30,13 @@
           <%= label_tag :from_month, "Desde" %>
           <%= select_tag :from_month,
                 options_for_select((1..12).map { |m| [I18n.t("date.month_names")[m], m] }, params[:from_month] || 1),
-                class: "form-control mb-1 border border-2" %>
+                class: "form-control mb-1 border border-2 border-secondary-subtle rounded" %>
         </div>
         <div class="col-md-6">
           <%= label_tag :to_month, "Hasta" %>
           <%= select_tag :to_month,
               options_for_select((1..12).map { |m| [I18n.t("date.month_names")[m], m] }, params[:to_month] || 12),
-              class: "form-control mb-1 border border-2" %>
+              class: "form-control mb-1 border border-2 border-secondary-subtle rounded" %>
         </div>
       </div>
     </div>
@@ -47,15 +45,15 @@
     <div class="col-md-3">
       <%= label_tag :grouping, "Agrupar por" %><br>
       <div class="form-check">
-        <%= radio_button_tag :grouping, "by_apartment_date", params[:grouping] == "by_apartment_date" || params[:grouping].blank?, id: "grouping_by_apartment_date", class: "form-check-input border border-2" %>
+        <%= radio_button_tag :grouping, "by_apartment_date", params[:grouping] == "by_apartment_date" || params[:grouping].blank?, id: "grouping_by_apartment_date", class: "form-check-input border border-2 border-secondary-subtle rounded" %>
         <%= label_tag :grouping_by_apartment_date, "Departamento / Fecha", class: "form-check-label" %>
       </div>
       <div class="form-check">
-        <%= radio_button_tag :grouping, "by_apartment_type", params[:grouping] == "by_apartment_type", id: "grouping_by_apartment_type", class: "form-check-input border border-2" %>
+        <%= radio_button_tag :grouping, "by_apartment_type", params[:grouping] == "by_apartment_type", id: "grouping_by_apartment_type", class: "form-check-input border border-2 border-secondary-subtle rounded" %>
         <%= label_tag :grouping_by_apartment_type, "Departamento / Tipo de ingreso", class: "form-check-label" %>
       </div>
       <div class="form-check">
-        <%= radio_button_tag :grouping, "by_month", params[:grouping] == "by_month", id: "grouping_by_month", class: "form-check-input border border-2" %>
+        <%= radio_button_tag :grouping, "by_month", params[:grouping] == "by_month", id: "grouping_by_month", class: "form-check-input border border-2 border-secondary-subtle rounded" %>
         <%= label_tag :grouping_by_month, "Mes", class: "form-check-label" %>
       </div>
     </div>
