@@ -7,37 +7,35 @@ class PagesController < ApplicationController
   end
 
   def balance
-    year = selected_year
-    @balance_inicial = session[:balance_inicial] || 0
-    @año = year
+    @balance_inicial ||= 0
 
+    year = session[:selected_year]
+    fecha_inicio = Date.new(year)
+    fecha_fin = Date.new(year, 12, 31)
 
-    ingresos = current_user.deposits.where(date: Date.new(year)..Date.new(year, 12, 31)).order(:date)
-    egresos = current_user.t.bills.where(date: Date.new(year)..Date.new(year, 12, 31)).order(:date)
+    ingresos = current_user.deposits.where(date: fecha_inicio..fecha_fin).order(:date)
+    egresos  = current_user.bills.where(date: fecha_inicio..fecha_fin).order(:date)
 
+    # Unir todos los registros y agrupar por mes
     all_months = (ingresos + egresos).map { |r| r.date.beginning_of_month }.uniq.sort
 
-    @balance = {}
-    acumulado = @balance_inicial
+    @balance_data = all_months.map do |month|
+      mes_ingresos = ingresos.select { |i| i.date.beginning_of_month == month }
+      mes_egresos  = egresos.select  { |e| e.date.beginning_of_month == month }
 
-    all_months.each do |month|
-      ingresos_mes = ingresos.select { |i| i.date.beginning_of_month == month }
-      egresos_mes = egresos.select { |e| e.date.beginning_of_month == month }
-
-      total_ingresos = ingresos_mes.sum(&:amount)
-      total_egresos = egresos_mes.sum(&:amount)
-      balance_mes = total_ingresos - total_egresos
-        acumulado += balance_mes
-
-      @balance[month] = {
-        registros: (ingresos_mes + egresos_mes).sort_by(&:date),
-        total_ingresos: total_ingresos,
-        total_egresos: total_egresos,
-        balance: balance_mes,
-        acumulado: acumulado
+      {
+        mes: month,
+        ingresos: mes_ingresos.sum(&:amount),
+        egresos: mes_egresos.sum(&:amount),
+        registros: (mes_ingresos + mes_egresos).sort_by(&:date)
       }
     end
+
+    @total_ingresos = ingresos.sum(&:amount)
+    @total_egresos  = egresos.sum(&:amount)
+    @balance_total  = @total_ingresos - @total_egresos
   end
+
 
   def set_year
     session[:selected_year] = params[:year].to_i

@@ -9,6 +9,7 @@ module ApplicationHelper
   end
 
   def formato_monto(monto)
+    monto ||= 0 # si es nil, lo convertimos a 0
     classes = monto.negative? ? "text-danger" : "text-dark"
     contenido = number_to_currency(monto, unit: "$", delimiter: ".", precision: 0)
     tag.span(contenido, class: classes)

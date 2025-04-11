@@ -1,0 +1,79 @@
+<% content_for :title, "Balance" %>
+<h1>Balance</h1>
+
+<div class="text-center">
+  <h2>Balance Año <%= session[:selected_year] %></h2>
+</div>
+
+<h4 class="text-start">
+  Saldo inicial:
+  <%= formato_monto(@balance_inicial || 0) %>
+</h4>
+
+<% acumulado = @balance_inicial || 0 %>
+
+<table class="table table-bordered">
+  <thead class="table-primary">
+    <tr>
+      <th>Mes</th>
+      <th>Fecha</th>
+      <th>Detalle</th>
+      <th class="text-end">Monto</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @balance_data.present? %>
+      <% @balance_data.each do |data| %>
+        <% mes = data[:mes] %>
+
+        <tr class="fw-bold text-dark">
+          <td><%= l(mes, format: "%B %Y").capitalize %></td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+
+        <% data[:registros].each do |r| %>
+          <tr class="<%= r.is_a?(Bill) ? 'text-danger' : 'text-dark' %>">
+            <td></td>
+            <td><%= r.date.strftime("%d-%m-%Y") %></td>
+            <td>
+              <% if r.is_a?(Deposit) && r.apartment.present? %>
+                D-<%= r.apartment.number %> - <%= r.comment %>
+              <% else %>
+                <%= r.comment.presence || (r.is_a?(Bill) ? "Egreso" : "Ingreso") %>
+              <% end %>
+            </td>
+            <td class="text-end <%= 'text-danger' if r.is_a?(Bill) || r.amount.negative? %>">
+              <%= number_to_currency(r.is_a?(Bill) ? -r.amount : r.amount, unit: "$", delimiter: ".", precision: 0) %>
+            </td>
+          </tr>
+        <% end %>
+
+        <!-- Totales del mes -->
+        <tr class="fw-bold">
+          <td colspan="3" class="border-0 text-end">Total ingresos</td>
+          <td class="text-end"><%= formato_monto(data[:ingresos]) %></td>
+        </tr>
+        <tr class="fw-bold">
+          <td colspan="3" class="border-0 text-end">Total egresos</td>
+          <td class="text-end"><%= formato_monto(-data[:egresos]) %></td>
+        </tr>
+        <tr class="fw-bold">
+          <td colspan="3" class="border-0 text-end">Balance del mes</td>
+          <td class="text-end"><%= formato_monto(data[:ingresos] - data[:egresos]) %></td>
+        </tr>
+
+        <% acumulado += data[:ingresos] - data[:egresos] %>
+        <tr class="fw-bold table-secondary">
+          <td colspan="3" class="text-end">Balance acumulado</td>
+          <td class="text-end <%= 'text-danger' if acumulado.negative? %>">
+            <%= formato_monto(acumulado) %>
+          </td>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr><td colspan="4">No hay movimientos registrados para este año.</td></tr>
+    <% end %>
+  </tbody>
+</table>
