@@ -20,7 +20,7 @@ class UsersController < ApplicationController
 
     if @user.update(user_params_to_update)
       flash[:notice] = "USUARIO ACTUALIZADO"
-      redirect_to users_path, notice: "Usuario actualizado correctamente."
+      redirect_to users_path
     else
       flash.now[:alert] = "ERROR AL ACTUALIZAR"
       render :edit, status: :unprocessable_entity
@@ -29,12 +29,12 @@ class UsersController < ApplicationController
 
   def destroy
     if @user == current_user
-      flash[:alert] = "NO ES POSIBLE ELIMINAR TU CUENTA"
-      redirect_to users_path, alert: "No puedes eliminarte a ti mismo."
+      flash[:alert] = "NO PUEDES ELIMINAR TU CUENTA"
+      redirect_to users_path
     else
       @user.destroy
       flash[:notice] = "USUARIO ELIMINADO"
-      redirect_to users_path, notice: "Usuario eliminado."
+      redirect_to users_path
     end
   end
 
@@ -43,7 +43,7 @@ class UsersController < ApplicationController
   def authorize_admin
     unless current_user.admin?
       flash[:alert] = "NO ESTÁ AUTORIZADO PARA ACCEDER A ESTA SECCIÓN"
-      redirect_to root_path, alert: "No estás autorizado para acceder a esta sección."
+      redirect_to root_path
     end
   end
 

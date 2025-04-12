@@ -1,4 +1,8 @@
 <%= form_with(model: bill) do |form| %>
+
+    <%= hidden_field_tag :from_month, params[:from_month] %>  
+    <%= hidden_field_tag :to_month, params[:to_month] %>
+
   <% if bill.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(bill.errors.count, "error") %> prohibited this bill from being saved:</h2>
@@ -11,27 +15,97 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :date, style: "display: block" %>
-    <%= form.date_field :date %>
+<div class="my-2">
+    <%= form.label :date, "Fecha" %><br>
+      <%if action_name == "new" %>
+        <%= form.date_field :date, value: Date.today, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px" %>
+      <% else %>
+        <%= form.date_field :date, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px" %>
+      <% end %>
   </div>
 
-  <div>
-    <%= form.label :tipo_ingreso, style: "display: block" %>
-    <%= form.number_field :tipo_ingreso %>
+  Concepto del Egreso<br>
+  <div class="btn-group border border-2" data-toggle="buttons">
+    <%= form.radio_button :tipo_egreso, "egreso_remuneracion", checked: true, id: "tipo_egreso_remuneracion" %>
+    <%= form.label :tipo_egreso, "Remuneraciones", value: "egreso_remuneracion", class: "btn", for: "tipo_egreso_remuneracion" %>
+
+    <%= form.radio_button :tipo_egreso, "egreso_util_aseo", id: "tipo_egreso_util_aseo" %>
+    <%= form.label :tipo_egreso, "Útiles de aseo", value: "egreso_util_aseo", class: "btn", for: "tipo_egreso_util_aseo" %>
+
+    <%= form.radio_button :tipo_egreso, "egreso_gasto_basico", id: "tipo_egreso_gasto_basico" %>
+    <%= form.label :tipo_egreso, "Gastos básicos", value: "egreso_gasto_basico", class: "btn", for: "tipo_egreso_gasto_basico" %>
+
+    <%= form.radio_button :tipo_egreso, "egreso_mantencion", id: "tipo_egreso_gasto_mantencion" %>
+    <%= form.label :tipo_egreso, "Mantenciones", value: "egreso_mantencion", class: "btn", for: "tipo_egreso_gasto_mantencion" %>
   </div>
 
-  <div>
-    <%= form.label :comment, style: "display: block" %>
-    <%= form.text_field :comment %>
+
+  <div class="field my-2">
+    <%= form.label :comment, "Comentario" %><br />
+    <%= form.text_area :comment, required: true, class: "ps-2 col-11 col-sm-6 border border-2 border-secondary-subtle", rows: 3 %>
   </div>
 
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+  <div class="my-2">
+    <%= form.label :amount, "Cantidad" %><br>
+    <%= form.text_field :amount, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px", id: "amount_input", data: { original_value: form.object.amount.present? ? form.object.amount.to_s.gsub(/\D/, "") : ""
+    }  %>
   </div>
+  <br>
 
   <div>
-    <%= form.submit %>
+    <% if action_name == "new" %>
+      <%= form.submit "Ingresar", class: "btn btn-secondary col-4 col-sm-3 col-md-2 col-lg-1" %>
+      <div class="py-2">
+        <%= link_to "Regresar", bills_path(from_month: params[:from_month], to_month: params[:to_month]), class: "btn btn-light border border-2 btn-ancho col-4 col-sm-3 col-md-2 col-lg-1" %>
+      </div>
+    <% else %>
+      <%= form.submit "Actualizar", class: "btn btn-secondary col-4 col-sm-3 col-md-2 col-lg-1" %>
+      <div class="py-2">
+        <%= link_to "Regresar", bills_path(from_month: params[:from_month], to_month: params[:to_month]), class: "btn btn-light border border-2 btn-ancho col-4 col-sm-3 col-md-2 col-lg-1" %>
+      </div>
+     <% end %>
   </div>
+
 <% end %>
+
+<script>
+  function initBillFormScript() {
+    // === CANTIDAD (AMOUNT) ===
+    const amountInput = document.getElementById("amount_input");
+
+    if (amountInput && !amountInput.dataset.listenerAdded) {
+      console.log("Escuchando en CANTIDAD");
+
+      amountInput.dataset.listenerAdded = true;
+
+      const formatCL = (value) => {
+        const raw = value.replace(/\D/g, ""); // Solo números
+        return new Intl.NumberFormat("es-CL", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        }).format(raw);
+      };
+
+      if (amountInput.value) {
+        const rawValue = amountInput.value.replace(/\D/g, "");
+        amountInput.dataset.originalValue = rawValue;
+        amountInput.value = formatCL(rawValue);
+      }
+
+      amountInput.addEventListener("input", function () {
+        const rawValue = this.value.replace(/\D/g, "");
+        this.dataset.originalValue = rawValue;
+        this.value = formatCL(rawValue);
+      });
+
+      if (amountInput.form) {
+        amountInput.form.addEventListener("submit", function () {
+          amountInput.value = amountInput.dataset.originalValue;
+        });
+      }
+    }
+  }
+
+  document.addEventListener("turbo:load", initBillFormScript);
+  document.addEventListener("turbo:render", initBillFormScript);
+</script>

@@ -6,10 +6,10 @@ class DepositsController < ApplicationController
   # GET /deposits or /deposits.json
   def index
     # Año ya lo tengo definido
+    year = selected_year
 
     from_month = (params[:from_month] || 1).to_i
     to_month = (params[:to_month] || 12).to_i
-    year = selected_year
 
     @from_date = Date.new(year, from_month, 1)
     @to_date = Date.new(year, to_month, -1) # úl
@@ -56,7 +56,7 @@ class DepositsController < ApplicationController
     respond_to do |format|
       if @deposit.save
         flash[:notice] = "INGRESO REGISTRADO"
-        format.html { redirect_to deposits_path }
+        format.html { redirect_to deposits_path(from_month: params[:from_month], to_month: params[:to_month]) }
         format.json { render :show, status: :created, location: @deposit }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -70,7 +70,7 @@ class DepositsController < ApplicationController
     respond_to do |format|
       if @deposit.update(deposit_params)
         flash[:notice] = "INGRESO ACTUALIZADO"
-        format.html { redirect_to deposits_path  }
+        format.html { redirect_to deposits_path(from_month: params[:from_month], to_month: params[:to_month]) }
         format.json { render :show, status: :ok, location: @deposit }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -82,9 +82,9 @@ class DepositsController < ApplicationController
   # DELETE /deposits/1 or /deposits/1.json
   def destroy
     @deposit.destroy!
-
+    flash[:notice] = "INGRESO ELIMINADO"
     respond_to do |format|
-      format.html { redirect_to deposits_path, status: :see_other, notice: "Deposit was successfully destroyed." }
+      format.html { redirect_to deposits_path(from_month: params[:from_month], to_month: params[:to_month]), status: :see_other, notice: "Deposit was successfully destroyed." }
       format.json { head :no_content }
     end
   end

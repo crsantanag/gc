@@ -4,9 +4,6 @@ class PagesController < ApplicationController
 
   def index
   end
-  def exito
-    @usuario = User.find(params[:id])
-  end
 
   def balance
     @balance_inicial = session[:balance_inicial]
@@ -40,7 +37,7 @@ class PagesController < ApplicationController
 
 
   def set_year
-    session[:selected_year] = params[:year].to_i
+    session[:selected_year] = (params[:year] || Date.today.year).to_i
     year = session[:selected_year]
     fecha_corte = Date.new(year - 1, 12, 31)
 
@@ -48,7 +45,10 @@ class PagesController < ApplicationController
     egresos = current_user.bills.where("date <= ?", fecha_corte).sum(:amount)
 
     session[:balance_inicial] = current_user.saldo_inicial + ingresos - egresos
-    flash[:notice] = "AÑO SELECCIONADO - #{year}"
+
+    if params[:year].present?
+          flash[:notice] = "AÑO SELECCIONADO - #{year}"
+    end
     redirect_to request.referer || root_path
   end
 

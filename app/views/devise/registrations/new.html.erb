@@ -16,7 +16,8 @@
   
     <div class="my-2">
     <%= f.label :saldo_inicial, "Saldo inicial" %> <br>
-    <%= f.number_field :saldo_inicial, class: "ps-2 col-7 col-md-3 border border-2 border-secondary-subtle rounded", style:"height: 35px", required: true %>
+    <%= f.text_field :saldo_inicial, class: "ps-2 col-7 col-md-3 border border-2 border-secondary-subtle rounded", style:"height: 35px", required: true, id: "saldoInicialInput", data: { original_value: f.object.saldo_inicial.present? ? f.object.saldo_inicial.to_s.gsub(/\D/, "") : ""
+    }  %>
   </div>
 
   <div class="my-2">
@@ -60,4 +61,47 @@
   <div class="actions">
      <%= f.submit "Registrar", class: "btn btn-secondary col-5 col-md-2 mt-2 mb-3" %>
   </div>
+  <br>
 <% end %>
+
+<script>
+  function initUserFormScript() {
+    // === CANTIDAD (AMOUNT) ===
+    const amountInput = document.getElementById("saldoInicialInput");
+
+    if (amountInput && !amountInput.dataset.listenerAdded) {
+      console.log("Escuchando en saldoInicialInput");
+
+      amountInput.dataset.listenerAdded = true;
+
+      const formatCL = (value) => {
+        const raw = value.replace(/\D/g, ""); // Solo números
+        return new Intl.NumberFormat("es-CL", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        }).format(raw);
+      };
+
+      if (amountInput.value) {
+        const rawValue = amountInput.value.replace(/\D/g, "");
+        amountInput.dataset.originalValue = rawValue;
+        amountInput.value = formatCL(rawValue);
+      }
+
+      amountInput.addEventListener("input", function () {
+        const rawValue = this.value.replace(/\D/g, "");
+        this.dataset.originalValue = rawValue;
+        this.value = formatCL(rawValue);
+      });
+
+      if (amountInput.form) {
+        amountInput.form.addEventListener("submit", function () {
+          amountInput.value = amountInput.dataset.originalValue;
+        });
+      }
+    }
+  }
+
+  document.addEventListener("turbo:load", initUserFormScript);
+  document.addEventListener("turbo:render", initUserFormScript);
+</script>

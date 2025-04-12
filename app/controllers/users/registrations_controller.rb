@@ -11,8 +11,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
 
     if resource.save
-      flash[:alert] = "USUARIO CREADO"
-      redirect_to pages_exito_path(id: resource.id) and return
+      flash[:notice] = "USUARIO CREADO"
+      redirect_to users_path and return
     else
       Rails.logger.error resource.errors.full_messages
       clean_up_passwords(resource)
@@ -70,7 +70,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name, :role ])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name_community, :type_community, :saldo_inicial, :name, :role ])
   end
 
   # If you have extra params to permit, append them to the sanitizer.
@@ -79,7 +79,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [ :name, :role ])
+    devise_parameter_sanitizer.permit(:account_update, keys: [ :name_community, :type_community, :saldo_inicial, :name, :role ])
   end
 
   # The path used after sign up.

@@ -1,12 +1,12 @@
 es:
   devise:
     sessions:
-      signed_in: "Sesión iniciada correctamente"
-      signed_out: "Sesión cerrada correctamente"
+      signed_in: "SESIÓN INICIADA CORRECTAMENTE"
+      signed_out: "SESIÓN CERRADA CORRECTAMENTE"
     failure:
       user:
-        not_found_in_database: "Email o contraseña inválidos"
-      invalid: "Email o contraseña inválidos"
+        not_found_in_database: "eMAIL o CONTRASEÑA INVÁLIDO"
+      invalid: "eMAIL o CONTRASEÑA INVÁLIDO"
   activerecord:
     attributes:
       deposit:

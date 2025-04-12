@@ -1,4 +1,5 @@
 <%= form_with(model: apartment) do |form| %>
+
   <% if apartment.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(apartment.errors.count, "error") %> No es posible crear/actualizar debido a:</h2>
@@ -24,12 +25,12 @@
     <% if action_name == "new" %>
       <%= form.submit "Crear", class: "btn btn-secondary col-4 col-sm-1 mt-2 mb-2" %>
       <div>
-        <%= link_to "Regresar", apartments_path, class: "col-4 col-sm-1 btn btn-light border border-2" %>
+        <%= link_to "Regresar", apartments_path(from_month: params[:from_month], to_month: params[:to_month]), class: "col-4 col-sm-1 btn btn-light border border-2" %>
       </div>
     <% else %>
       <%= form.submit "Actualizar", class: "btn btn-secondary col-4 col-sm-1 mt-2 mb-2" %>
       <div>
-        <%= link_to "Regresar", apartment, class: "col-4 col-sm-1 btn btn-light border border-2" %>
+        <%= link_to "Regresar", apartments_path(from_month: params[:from_month], to_month: params[:to_month]), class: "col-4 col-sm-1 btn btn-light border border-2" %>
       </div>
     <% end %>
   </div>

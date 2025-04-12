@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   root "pages#index"
 
   get  "pages/index"
-  get  "/pages/exito",  to: "pages#exito"
   get  "balance",       to: "pages#balance"
   post "set_year",      to: "pages#set_year"
 

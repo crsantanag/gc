@@ -16,7 +16,7 @@
   .text-end { text-align: right; }
 </style>
 
-<%= link_to "Registrar ingreso", new_deposit_path, class:"mb-3 col-6 col-sm-4 col-md-2 col-lg-2 btn btn-info" %>
+<%= link_to "Registrar ingreso", new_deposit_path(request.query_parameters), class:"mb-3 col-6 col-sm-4 col-md-2 col-lg-2 btn btn-info" %>
 
 <h2> Detalle de ingresos</h2>
 
@@ -29,13 +29,13 @@
         <div class="col-md-6">
           <%= label_tag :from_month, "Desde" %>
           <%= select_tag :from_month,
-                options_for_select((1..12).map { |m| [I18n.t("date.month_names")[m], m] }, params[:from_month] || 1),
+                options_for_select((1..12).map { |m| [I18n.t("date.month_names")[m], m] }, @from_date.month),
                 class: "form-control mb-1 border border-2 border-secondary-subtle rounded" %>
         </div>
         <div class="col-md-6">
           <%= label_tag :to_month, "Hasta" %>
           <%= select_tag :to_month,
-              options_for_select((1..12).map { |m| [I18n.t("date.month_names")[m], m] }, params[:to_month] || 12),
+              options_for_select((1..12).map { |m| [I18n.t("date.month_names")[m], m] }, @to_date.month),
               class: "form-control mb-1 border border-2 border-secondary-subtle rounded" %>
         </div>
       </div>

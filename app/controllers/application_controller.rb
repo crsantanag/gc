@@ -22,6 +22,9 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
+    # Sí o sí se asigna el año actual al inicio de sesión
+    session[:selected_year] = Date.today.year
+    session[:balance_inicial] = calcular_balance_inicial(resource, session[:selected_year])
     root_path
   end
 
@@ -30,6 +33,13 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def calcular_balance_inicial(user, year)
+    fecha_corte = Date.new(year - 1, 12, 31)
+    ingresos = user.deposits.where("date <= ?", fecha_corte).sum(:amount)
+    egresos  = user.bills.where("date <= ?", fecha_corte).sum(:amount)
+    user.saldo_inicial + ingresos - egresos
+  end
 
   def require_year
     if user_signed_in? && !session[:selected_year].present?

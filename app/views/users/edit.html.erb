@@ -12,6 +12,11 @@
     </div>
   <% end %>
 
+  <div class="my-3">
+    Email
+    <p><strong> <%= @user.email%> </strong></p>
+  </div>
+  
   <div class="mb-3">
     <%= f.label :name_community, "Nombre comunidad" %>
     <%= f.text_field :name_community, class: "form-control border border-2 border-secondary-subtle rounded", required: true %>
@@ -24,19 +29,14 @@
 
   <div class="mb-3">
     <%= f.label :saldo_inicial, "Saldo inicial" %>
-    <%= f.number_field :saldo_inicial, class: "form-control border border-2 border-secondary-subtle rounded", required: true %>
+    <%= f.text_field :saldo_inicial, class: "form-control border border-2 border-secondary-subtle rounded", required: true, id: "saldoInicialInput", data: { original_value: f.object.saldo_inicial.present? ? f.object.saldo_inicial.to_s.gsub(/\D/, "") : ""
+    }   %>
   </div>
 
   <div class="mb-3">
     <%= f.label :name, "Nombre" %>
     <%= f.text_field :name, class: "form-control border border-2 border-secondary-subtle rounded", required: true %>
   </div>
-
-  <div class="mb-3">
-    <%= f.label :email %>
-    <%= f.email_field :email, class: "form-control border border-2 border-secondary-subtle rounded", required: true %>
-  </div>
-
 
   <div class="mb-3">
     <%= f.label :role, "Rol" %><br>
@@ -69,3 +69,45 @@
     <%= link_to "Regresar", users_path, class: "btn btn-secondary ms-2 mt-2 mb-3" %>
   </div>
 <% end %>
+
+<script>
+  function editUserFormScript() {
+    // === CANTIDAD (AMOUNT) ===
+    const amountInput = document.getElementById("saldoInicialInput");
+
+    if (amountInput && !amountInput.dataset.listenerAdded) {
+      console.log("Escuchando en saldoInicialInput");
+
+      amountInput.dataset.listenerAdded = true;
+
+      const formatCL = (value) => {
+        const raw = value.replace(/\D/g, ""); // Solo números
+        return new Intl.NumberFormat("es-CL", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        }).format(raw);
+      };
+
+      if (amountInput.value) {
+        const rawValue = amountInput.value.replace(/\D/g, "");
+        amountInput.dataset.originalValue = rawValue;
+        amountInput.value = formatCL(rawValue);
+      }
+
+      amountInput.addEventListener("input", function () {
+        const rawValue = this.value.replace(/\D/g, "");
+        this.dataset.originalValue = rawValue;
+        this.value = formatCL(rawValue);
+      });
+
+      if (amountInput.form) {
+        amountInput.form.addEventListener("submit", function () {
+          amountInput.value = amountInput.dataset.originalValue;
+        });
+      }
+    }
+  }
+
+  document.addEventListener("turbo:load", editUserFormScript);
+  document.addEventListener("turbo:render", editUserFormScript);
+</script>

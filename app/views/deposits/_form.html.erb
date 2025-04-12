@@ -1,4 +1,8 @@
 <%= form_with(model: deposit) do |form| %>
+
+  <%= hidden_field_tag :from_month, params[:from_month] %>  
+  <%= hidden_field_tag :to_month, params[:to_month] %>
+
   <% if deposit.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(deposit.errors.count, "error") %> prohibited this deposit from being saved:</h2>
@@ -58,7 +62,7 @@
     </div>
   </div>
 
-  <div class="my-2">
+  <div class="my-2"> 
     <%= form.label :amount, "Cantidad" %><br>
     <%= form.text_field :amount, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px", id: "amount_input", data: { original_value: form.object.amount.present? ? form.object.amount.to_s.gsub(/\D/, "") : ""
     }  %>
@@ -68,12 +72,12 @@
     <% if action_name == "new" %>
       <%= form.submit "Ingresar", class: "btn btn-info col-4 col-sm-1" %>
       <div class="py-2">
-        <%= link_to "Regresar", deposits_path, class: "btn btn-light border border-2 btn-ancho col-4 col-sm-1" %>
+        <%= link_to "Regresar", deposits_path(from_month: params[:from_month], to_month: params[:to_month]), class: "btn btn-light border border-2 btn-ancho col-4 col-sm-1" %>
       </div>
     <% else %>
       <%= form.submit "Actualizar", class: "btn btn-info col-4 col-sm-1" %>
       <div class="py-2">
-        <%= link_to "Regresar", @deposits, class: "btn btn-light border border-2 btn-ancho col-4 col-sm-1" %>
+        <%= link_to "Regresar", deposits_path(from_month: params[:from_month], to_month: params[:to_month]), class: "btn btn-light border border-2 btn-ancho col-4 col-sm-1" %>
       </div>
      <% end %>
   </div>
