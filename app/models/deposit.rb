@@ -2,11 +2,11 @@ class Deposit < ApplicationRecord
   belongs_to :user
   belongs_to :apartment
 
-  enum tipo_ingreso: {
-     ingreso_default: 0,
-     ingreso_comun: 1,
-     ingreso_extraordinario: 2,
-     ingreso_otro: 3 }
+  enum :tipo_ingreso,
+        [ :ingreso_default,
+          :ingreso_comun,
+          :ingreso_extraordinario,
+          :ingreso_otro ]
 
   validates :mes, :ano, presence: true, if: -> { tipo_ingreso == "ingreso_comun" }
 

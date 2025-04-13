@@ -38,27 +38,30 @@
 
       <% if user_signed_in? %>
      
+       <% if session[:selected_year] %>
+          <div class="me-3 btn btn-primary btn-sm my-2">
+            <i class="fa-regular fa-calendar"></i> <strong><%= session[:selected_year] %> </strong>
+            <% if session[:balance_inicial] %>
+              | Balance inicial: <strong class="<%= session[:balance_inicial] < 0 ? 'text-danger' : 'text-white' %>">
+              <%= number_to_currency(session[:balance_inicial], unit: "$", delimiter: ".", precision: 0) %>
+              </strong>
+            <% end %>
+          </div>
+        <% end %>
+
         <div id="year-selector" class="d-flex align-items-center my-2">
           <%= form_with url: set_year_path, method: :post, local: true, html: { class: "d-flex align-items-center me-2" } do %>
             <div class="me-1">
               Año:
             </div>
             <%= number_field_tag :year, selected_year || Date.today.year, in: 2020..Date.today.year, class: "form-control form-control-sm me-2 border border-secondary-subtle border-2 rounded", style: "width: 5rem;" %>
-            <%= submit_tag "Seleccionar", class: "btn btn-secondary btn-sm" %>
+            <%= submit_tag "Cambiar", class: "btn btn-secondary btn-sm" %>
           <% end %>
         </div>
+
       <% end%>
 
-      <% if session[:selected_year] %>
-        <div class="me-3 btn btn-primary btn-sm my-2">
-          <i class="fa-regular fa-calendar"></i> <strong><%= session[:selected_year] %> </strong>
-          <% if session[:balance_inicial] %>
-            | Balance inicial: <strong class="<%= session[:balance_inicial] < 0 ? 'text-danger' : 'text-white' %>">
-            <%= number_to_currency(session[:balance_inicial], unit: "$", delimiter: ".", precision: 0) %>
-            </strong>
-          <% end %>
-        </div>
-      <% end %>
+
 
       <div class="d-flex mx-2 justify-content-end align-items-center" gap-2>
         <% if user_signed_in? %>

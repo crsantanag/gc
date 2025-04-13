@@ -3,7 +3,9 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-  enum :role, [ :normal, :admin ]
+  enum :role,
+        [ :normal,
+          :admin ]
 
   has_many :apartments
   has_many :deposits

@@ -7,7 +7,7 @@ class PagesController < ApplicationController
     @balance_inicial = session[:balance_inicial]
 
     year = session[:selected_year]
-    fecha_inicio = Date.new(year)
+    fecha_inicio = Date.new(year, 1, 1)
     fecha_fin = Date.new(year, 12, 31)
 
     ingresos = current_user.deposits.where(date: fecha_inicio..fecha_fin).order(:date)

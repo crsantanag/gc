@@ -10,6 +10,9 @@
 require "faker"
 
 User.delete_all
+Apartment.delete_all
+Deposit.delete_all
+Bill.delete_all
 
 # Crear usuarios
 User.create!(
