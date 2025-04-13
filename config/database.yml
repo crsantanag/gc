@@ -23,7 +23,6 @@ default: &default
   host: localhost
   port: 5432
 
-
 development:
   <<: *default
   database: gc_development
@@ -34,5 +33,6 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
-
+  database: gc_production
+  username: gc
+  password: <%= ENV["CG_DATABASE_PASSWORD"] %>
