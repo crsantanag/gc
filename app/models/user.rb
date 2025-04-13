@@ -7,7 +7,7 @@ class User < ApplicationRecord
         [ :normal,
           :admin ]
 
-  has_many :apartments
-  has_many :deposits
-  has_many :bills
+  has_many :apartments, dependent: :destroy
+  has_many :deposits, dependent: :destroy
+  has_many :bills, dependent: :destroy
 end
