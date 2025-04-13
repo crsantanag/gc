@@ -15,7 +15,7 @@ User.delete_all
 User.create!(
   name_community: "Edificio La Providencia",
   type_community: "Departamento",
-  saldo_inicial: -176000,
+  saldo_inicial: 0,
   name: "Carlos Santana",
   email: "carlos.santana@gmail.com",
   password: "123456",
