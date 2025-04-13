@@ -1,4 +1,8 @@
 es:
+  errors:
+    messages:
+      not_saved: "Error!"
+      not_found: "no encontrado"
   devise:
     sessions:
       signed_in: "SESIÓN INICIADA CORRECTAMENTE"
@@ -7,8 +11,21 @@ es:
       user:
         not_found_in_database: "eMAIL o CONTRASEÑA INVÁLIDO"
       invalid: "eMAIL o CONTRASEÑA INVÁLIDO"
-      unauthenticated: "DEBE INICAR SESIÓN ANTES DE ACCEDER A ESTA PÁGINA"
+      unauthenticated: "DEBE INICIAR SESIÓN ANTES DE ACCEDER A ESTA PÁGINA"
+    passwords:
+      send_instructions: "Recibirás un correo electrónico con instrucciones para restablecer tu contraseña en unos minutos."
+      updated: "Tu contraseña ha sido cambiada correctamente. Ahora estás conectado."
+      updated_not_active: "Tu contraseña ha sido cambiada correctamente."
+      no_token: "No puedes acceder a esta página si no vienes desde un correo de recuperación de contraseña."
+      send_paranoid_instructions: "Si tu correo existe en nuestra base de datos, recibirás un correo con instrucciones."
   activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              not_found: "No se encontró ningún usuario con este correo electrónico"
+              blank: "no puede estar en blanco"
     attributes:
       deposit:
         tipo_ingreso:
@@ -28,4 +45,3 @@ es:
       - day
       - month
       - year
-
