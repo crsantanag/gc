@@ -1,7 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_action :require_year, only: [ :index, :set_year ]
-  before_action :require_year, only: [ :balance ]
-
+  before_action :authenticate_user!, except: [ :index ]
   def index
   end
 

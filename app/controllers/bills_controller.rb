@@ -1,6 +1,6 @@
 class BillsController < ApplicationController
   before_action :authenticate_user!
-  before_action :require_year
+
   before_action :set_bill, only: %i[ show edit update destroy ]
 
   # GET /bills or /bills.json
@@ -8,15 +8,19 @@ class BillsController < ApplicationController
     # Año ya lo tengo definido
     year = selected_year
 
-    from_month = (params[:from_month] || 1).to_i
-    to_month = (params[:to_month] || 12).to_i
+    from_month = params[:from_month].to_i
+    to_month = params[:to_month].to_i
+
+    from_month = 1 unless (1..12).include?(from_month)
+    to_month = 12 unless (1..12).include?(to_month)
 
     @from_date = Date.new(year, from_month, 1)
     @to_date = Date.new(year, to_month, -1) # último día del mes
 
     @bills = current_user.bills.where(date: @from_date..@to_date).order(date: :asc)
 
-    params[:grouping] ||= "by_month"  # <= esta línea agrega el valor por defecto
+    @grouping = params[:grouping] ||= "by_month"
+    # <= esta línea agrega el valor por defecto
 
     case params[:grouping]
     when "by_type"
@@ -60,7 +64,7 @@ class BillsController < ApplicationController
     respond_to do |format|
       if @bill.save
         flash[:notice] = "EGRESO REGISTRADO"
-        format.html { redirect_to bills_path(from_month: params[:from_month], to_month: params[:to_month]) }
+        format.html { redirect_to filtered_redirect }
         format.json { render :show, status: :created, location: @bill }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -72,9 +76,9 @@ class BillsController < ApplicationController
   # PATCH/PUT /bills/1 or /bills/1.json
   def update
     respond_to do |format|
-      flash[:notice] = "EGRESO ACTUALIZADO"
       if @bill.update(bill_params)
-        format.html { redirect_to bills_path(from_month: params[:from_month], to_month: params[:to_month]) }
+        flash[:notice] = "EGRESO ACTUALIZADO"
+        format.html { redirect_to filtered_redirect }
         format.json { render :show, status: :ok, location: @bill }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -86,9 +90,9 @@ class BillsController < ApplicationController
   # DELETE /bills/1 or /bills/1.json
   def destroy
     @bill.destroy!
-
+    flash[:notice] = "EGRESO ELIMINADO"
     respond_to do |format|
-      format.html { redirect_to bills_path, status: :see_other, notice: "Bill was successfully destroyed." }
+      format.html { redirect_to filtered_redirect, status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -97,6 +101,12 @@ class BillsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_bill
       @bill = current_user.bills.find(params[:id])
+    end
+
+    def filtered_redirect
+      allowed_params = %i[from_month to_month grouping]
+      filtered = params.slice(*allowed_params).to_unsafe_h.compact_blank
+      bills_path(filtered)
     end
 
     # Only allow a list of trusted parameters through.

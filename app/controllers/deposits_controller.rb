@@ -1,6 +1,6 @@
 class DepositsController < ApplicationController
   before_action :authenticate_user!
-  before_action :require_year
+
   before_action :set_deposit, only: %i[ show edit update destroy ]
 
   # GET /deposits or /deposits.json
@@ -8,8 +8,11 @@ class DepositsController < ApplicationController
     # Año ya lo tengo definido
     year = selected_year
 
-    from_month = (params[:from_month] || 1).to_i
-    to_month = (params[:to_month] || 12).to_i
+    from_month = params[:from_month].to_i
+    to_month = params[:to_month].to_i
+
+    from_month = 1 unless (1..12).include?(from_month)
+    to_month = 12 unless (1..12).include?(to_month)
 
     @from_date = Date.new(year, from_month, 1)
     @to_date = Date.new(year, to_month, -1) # úl
@@ -56,7 +59,7 @@ class DepositsController < ApplicationController
     respond_to do |format|
       if @deposit.save
         flash[:notice] = "INGRESO REGISTRADO"
-        format.html { redirect_to deposits_path(from_month: params[:from_month], to_month: params[:to_month]) }
+        format.html { redirect_to filtered_redirect  }
         format.json { render :show, status: :created, location: @deposit }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -70,7 +73,7 @@ class DepositsController < ApplicationController
     respond_to do |format|
       if @deposit.update(deposit_params)
         flash[:notice] = "INGRESO ACTUALIZADO"
-        format.html { redirect_to deposits_path(from_month: params[:from_month], to_month: params[:to_month]) }
+        format.html { redirect_to filtered_redirect }
         format.json { render :show, status: :ok, location: @deposit }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -84,7 +87,7 @@ class DepositsController < ApplicationController
     @deposit.destroy!
     flash[:notice] = "INGRESO ELIMINADO"
     respond_to do |format|
-      format.html { redirect_to deposits_path(from_month: params[:from_month], to_month: params[:to_month]), status: :see_other, notice: "Deposit was successfully destroyed." }
+      format.html { redirect_to filtered_redirect, status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -95,8 +98,14 @@ class DepositsController < ApplicationController
       @deposit = current_user.deposits.find(params[:id])
     end
 
+    def filtered_redirect
+      allowed_params = %i[from_month to_month grouping]
+      filtered = params.slice(*allowed_params).to_unsafe_h.compact_blank
+      deposits_path(filtered)
+    end
+
     # Only allow a list of trusted parameters through.
     def deposit_params
-      params.require(:deposit).permit(:date, :amount, :comment, :tipo_ingreso, :mes, :ano, :apartment_id)
+      params.require(:deposit).permit(:date, :amount, :comment, :tipo_ingreso, :mes, :ano, :user_id, :apartment_id)
     end
 end

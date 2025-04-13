@@ -1,7 +1,8 @@
 <%= form_with(model: bill) do |form| %>
 
-    <%= hidden_field_tag :from_month, params[:from_month] %>  
-    <%= hidden_field_tag :to_month, params[:to_month] %>
+  <%= hidden_field_tag :from_month, params[:from_month] || 1 %>
+  <%= hidden_field_tag :to_month, params[:to_month] || 12 %>
+  <%= hidden_field_tag :grouping, params[:grouping] %>
 
   <% if bill.errors.any? %>
     <div style="color: red">

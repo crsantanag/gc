@@ -1,5 +1,6 @@
 class ApartmentsController < ApplicationController
   before_action :authenticate_user!
+
   before_action :set_apartment, only: %i[ show edit update destroy ]
 
   # GET /apartments or /apartments.json

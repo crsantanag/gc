@@ -25,8 +25,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_09_155933) do
 
   create_table "bills", force: :cascade do |t|
     t.date "date"
-    t.integer "tipo_ingreso"
+    t.integer "tipo_egreso"
     t.string "comment"
+    t.integer "amount"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -35,9 +36,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_09_155933) do
 
   create_table "deposits", force: :cascade do |t|
     t.date "date"
-    t.integer "amount"
-    t.string "comment"
     t.integer "tipo_ingreso"
+    t.string "comment"
+    t.integer "amount"
     t.integer "mes"
     t.integer "ano"
     t.bigint "user_id", null: false
@@ -56,6 +57,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_09_155933) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name_community"
+    t.string "type_community"
+    t.integer "saldo_inicial", default: 0
     t.string "name"
     t.integer "role", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true

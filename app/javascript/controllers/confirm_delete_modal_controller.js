@@ -6,7 +6,7 @@ export default class extends Controller {
 
   showModal(event) {
     const button = event.currentTarget
-    const formId = button.dataset.depositForm
+    const formId = button.dataset.depositForm || button.dataset.billForm
 
     this.confirmTarget.dataset.formId = formId
 

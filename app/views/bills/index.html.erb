@@ -8,9 +8,7 @@
   .text-end { text-align: right; }
 </style>
 
-<div class="pb-3">
   <%= link_to "Registrar egreso", new_bill_path(request.query_parameters), class: "mb-3 col-6 col-sm-4 col-md-2 col-lg-2 btn btn-info" %>
-</div>
 
 <h2> Detalle de egresos</h2>
 
@@ -49,7 +47,7 @@
     </div>
 
     <!-- Columna 3: Acciones -->
-    <div class="col-md-3 d-flex flex-column justify-content-end">
+    <div class="col-md-3 d-flex flex-column justify-content-start">
       <%= submit_tag "Filtrar", class: "col-6 btn btn-primary mb-2" %>
       <%= link_to "Limpiar", bills_path, class: "col-6 btn btn-secondary" %>
     </div>
@@ -79,18 +77,17 @@
 
   <% @bills_by_month.each do |month_date, bills| %>
     <!-- Título del grupo -->
-<% if params[:grouping] == "by_type" %>
-  <% label = case month_date
-            when "egreso_remuneracion" then "Remuneraciones"
-            when "egreso_util_aseo"    then "Útiles de aseo"
-            when "egreso_gasto_basico" then "Gastos básicos"
-            when "egreso_mantencion"   then "Mantenciones"
-            else "Otros" end %>
-  <h4><%= label %></h4>
-<% else %>
-  <h4><%= l(month_date, format: "%B %Y").capitalize %></h4>
-<% end %>
-
+    <% if params[:grouping] == "by_type" %>
+      <% label = case month_date
+                when "egreso_remuneracion" then "Remuneraciones"
+                when "egreso_util_aseo"    then "Útiles de aseo"
+                when "egreso_gasto_basico" then "Gastos básicos"
+                when "egreso_mantencion"   then "Mantenciones"
+                else "Otros" end %>
+      <h4><%= label %></h4>
+    <% else %>
+      <h4><%= l(month_date, format: "%B %Y").capitalize %></h4>
+    <% end %>
 
     <div class="table-responsive">
       <table class="table table-bordered table-striped">
@@ -174,42 +171,45 @@
   <% end %>
 
   <!-- Total general -->
-  <div class="mb-3">
-    <h4 class="text-start">
-      TOTAL GENERAL: <%= number_to_currency(total_general, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %>
-    </h4>
-    <br>
-  </div>
+  <% if total_general > 0 %>
+    <div class="mb-3">
+      <h4 class="text-start">
+        TOTAL GENERAL: <%= number_to_currency(total_general, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %>
+      </h4>
+      <br>
+    </div>
+  <% end %>
 
-</div>
 
-<!-- Modal de confirmación -->
-<div class="modal fade"
-     id="confirmDeleteModal"
-     tabindex="-1"
-     aria-labelledby="confirmDeleteModalLabel"
-     aria-hidden="true"
-     data-confirm-delete-modal-target="modal">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirma eliminación</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-      <div class="modal-body">
-        ¿Estás seguro de querer eliminar este registro?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button"
-                class="btn btn-danger"
-                data-confirm-delete-modal-target="confirm"
-                data-action="click->confirm-delete-modal#confirmDelete">
-          Eliminar
-        </button>
+
+  <!-- Modal de confirmación -->
+  <div class="modal fade"
+       id="confirmDeleteModal"
+       tabindex="-1"
+      aria-labelledby="confirmDeleteModalLabel"
+      aria-hidden="true"
+      data-confirm-delete-modal-target="modal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteModalLabel">Confirma eliminación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro de querer eliminar este registro?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button"
+                  class="btn btn-danger"
+                  data-confirm-delete-modal-target="confirm"
+                  data-action="click->confirm-delete-modal#confirmDelete">
+            Eliminar
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
+</div>
 

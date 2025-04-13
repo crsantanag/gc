@@ -10,6 +10,11 @@
 
 <h1>Ingresos</h1>
 
+<% if @deposits_paths.count == 0 %>
+  <h2>No existen egresos registrados</h2>
+<% else %>
+  <% total_general = 0 %>
+
 <% grouped_deposits = @deposits.joins(:apartment)
                                .order("apartments.number ASC, deposits.date ASC, deposits.created_at ASC")
                                .group_by(&:apartment) %>
@@ -89,4 +94,6 @@
   <% unless index == grouped_deposits.size - 1 %>
     <div class="page-break"></div>
   <% end %>
+<% end %>
+
 <% end %>
