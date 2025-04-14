@@ -59,18 +59,6 @@
   <%= link_to "Exportar PDF", bills_path(format: :pdf, from_month: params[:from_month], from_year: params[:from_year], to_month: params[:to_month], to_year: params[:to_year], grouping: params[:grouping]), class: "col-4 col-sm-3 col-md-2 col-lg-2 btn btn-secondary" %>
 </div>
 
-<% if params[:from].present? || params[:to].present? %>
-  <p>
-    Mostrando egresos
-    <% if params[:from].present? %>
-      desde <strong><%= l Date.parse(params[:from]) %></strong>
-    <% end %>
-    <% if params[:to].present? %>
-      hasta <strong><%= l Date.parse(params[:to]) %></strong>
-    <% end %>
-  </p>
-<% end %>
-
 <% total_general = 0 %>
 
 <div data-controller="confirm-delete-modal">
@@ -83,7 +71,9 @@
                 when "egreso_util_aseo"    then "Útiles de aseo"
                 when "egreso_gasto_basico" then "Gastos básicos"
                 when "egreso_mantencion"   then "Mantenciones"
-                else "Otros" end %>
+                when "egreso_otro"         then "Otros gastos"
+                else "Otros"
+      end %>
       <h4><%= label %></h4>
     <% else %>
       <h4><%= l(month_date, format: "%B %Y").capitalize %></h4>
@@ -117,7 +107,9 @@
                           when "egreso_util_aseo"    then "Útiles de aseo"
                           when "egreso_gasto_basico" then "Gastos básicos"
                           when "egreso_mantencion"   then "Mantenciones"
-                          else "Otros" end %>
+                          when "egreso_otro"         then "Otros gastos"
+                          else "Otros"
+                end %>
                 <%= label %>
               </td>
               <td class="text-end">
@@ -154,7 +146,9 @@
                   when "egreso_util_aseo"    then "Útiles de aseo"
                   when "egreso_gasto_basico" then "Gastos básicos"
                   when "egreso_mantencion"   then "Mantenciones"
-                  else "Otros" end %>
+                  when "egreso_otro"         then "Otros gastos"
+                  else "Otros" 
+                end %>
                 <%= label %>
               <% else %>
                 <%= l(month_date, format: "%B %Y").capitalize %>

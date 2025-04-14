@@ -6,5 +6,6 @@ class Bill < ApplicationRecord
           :egreso_remuneracion,
           :egreso_util_aseo,
           :egreso_gasto_basico,
-          :egreso_mantencion ]
+          :egreso_mantencion,
+          :egreso_otro ]
 end

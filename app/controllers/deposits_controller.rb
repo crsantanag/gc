@@ -56,6 +56,11 @@ class DepositsController < ApplicationController
     @deposit = current_user.deposits.new(deposit_params)
     @deposit.user_id = current_user.id
 
+    if @deposit.tipo_ingreso != "ingreso_comun"
+       @deposit.mes = nil
+       @deposit.ano = nil
+    end
+
     respond_to do |format|
       if @deposit.save
         flash[:notice] = "INGRESO REGISTRADO"
@@ -70,8 +75,15 @@ class DepositsController < ApplicationController
 
   # PATCH/PUT /deposits/1 or /deposits/1.json
   def update
+    @deposit.assign_attributes(deposit_params)
+
+    if @deposit.tipo_ingreso != "ingreso_comun"
+       @deposit.mes = nil
+       @deposit.ano = nil
+    end
+
     respond_to do |format|
-      if @deposit.update(deposit_params)
+      if @deposit.save
         flash[:notice] = "INGRESO ACTUALIZADO"
         format.html { redirect_to filtered_redirect }
         format.json { render :show, status: :ok, location: @deposit }
