@@ -6,5 +6,5 @@ import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
 eagerLoadControllersFrom("controllers", application)
 
 // Registro manual de ConfirmDeleteModalController
-import ConfirmDeleteModalController from "./confirm_delete_modal_controller"
+import ConfirmDeleteModalController from "controllers/confirm_delete_modal_controller"
 application.register("confirm-delete-modal", ConfirmDeleteModalController)
