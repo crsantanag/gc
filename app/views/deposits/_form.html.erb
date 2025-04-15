@@ -1,3 +1,4 @@
+<div data-controller="deposit-form">
 <%= form_with(model: deposit) do |form| %>
 
   <%= hidden_field_tag :from_month, params[:from_month] || 1 %>
@@ -6,8 +7,11 @@
 
   <% if deposit.errors.any? %>
     <div style="color: red">
-      <h2><%= pluralize(deposit.errors.count, "error") %> prohibited this deposit from being saved:</h2>
-
+      <% if deposit.errors.count == 1 %>
+        <h4>Se encontró <%= deposit.errors.count %> error </h4>
+      <% else %>
+        <h4>Se encontraron <%= deposit.errors.count %> errores </h4>
+      <% end %>
       <ul>
         <% deposit.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -19,21 +23,21 @@
   <div class="mb-2">
     <%= form.label :date, "Fecha" %><br>
       <%if action_name == "new" %>
-        <%= form.date_field :date, value: Date.today, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px" %>
+        <%= form.date_field :date, value: Date.today, required: true, class: "ps-1 col-5 col-md-2 border border-2 border-secondary-subtle rounded", style:"height: 35px" %>
       <% else %>
-        <%= form.date_field :date, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px" %>
+        <%= form.date_field :date, required: true, class: "ps-1 col-4 col-md-2 border border-2 border-secondary-subtle rounded", style:"height: 35px" %>
       <% end %>
   </div>
 
   <div class="my-2">
-    <%= form.label :apartment_id, "Departamento" %><br>
+    <%= form.label :apartment_id, current_user.type_community %><br>
     <%= form.collection_select :apartment_id, @apartments, :id, :number,
-        { prompt: "Seleccione un departamento" },
-        { class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style: "height: 35px" } %>
+        { prompt: "Seleccione #{current_user.type_community.downcase}" },
+        { class: "ps-1 col-8 col-md-2 border border-2 border-secondary-subtle rounded", style: "height: 35px", required: true} %>
   </div>
 
   Concepto del Ingreso<br>
-  <div class="btn-group border border-2" data-toggle="buttons">
+  <div class="ps-1 btn-group border border-2" data-toggle="buttons">
     <%= form.radio_button :tipo_ingreso, "ingreso_comun", checked: true, id: "tipo_ingreso_comun" %>
     <%= form.label :tipo_ingreso, "Cuota mensual", value: "ingreso_comun", class: "btn", for: "tipo_ingreso_comun" %>
 
@@ -46,104 +50,101 @@
 
 
   <div class="field my-2">
-    <%= form.label :comment, "Comentario" %><br />
-    <%= form.text_area :comment, required: true, class: "ps-2 col-11 col-sm-6 border border-2 border-secondary-subtle", rows: 3 %>
+    <%= form.label :comment, "Comentario" %><br>
+    <%= form.text_area :comment, required: true, class: "ps-1 col-11 col-md-6 border border-2 border-secondary-subtle rounded", rows: 3 %>
   </div>
 
   <!-- Contenedor de los campos Mes y Año -->
-  <div id="date_fields">
-    <div class="my-2">
+  <div class="my-2", id="date_fields" data-deposit-form-target="dateFields">
+    <div class="mb-2">
       <%= form.label :mes, "Mes" %>
-      <%= form.select :mes, options_for_select(Deposit::MONTHS, form.object.mes), { prompt: "Seleccione un mes" }, { class: "ps-2 col-6 col-sm-2 border border-2 border-secondary-subtle rounded", style: "height: 35px"} %>
+      <%= form.select :mes, options_for_select(Deposit::MONTHS, form.object.mes),
+          { prompt: "Seleccione mes" },
+          { class: "ps-1 col-5 col-md-2 border border-2 border-secondary-subtle rounded", style: "height: 35px", data: { deposit_form_target: "mes" }, required: true } %>
     </div>
-
-    <div class="my-2">
+    <div>
       <%= form.label :ano, "Año" %>
-      <%= form.select :ano, options_for_select(Deposit::YEARS, form.object.ano), { prompt: "Seleccione un año" }, { class: "ps-2 col-6 col-sm-2 border border-2 border-secondary-subtle rounded", style: "height: 35px"} %>
+      <%= form.select :ano, options_for_select(Deposit::YEARS, form.object.ano),
+          { prompt: "Seleccione año" },
+          { class: "ps-1 col-5 col-md-2 border border-2 border-secondary-subtle rounded", style: "height: 35px", data: { deposit_form_target: "ano" }, required: true } %>
     </div>
   </div>
 
-  <div class="my-2"> 
+  <div class="mb-4"> 
     <%= form.label :amount, "Cantidad" %><br>
-    <%= form.text_field :amount, required: true, class: "ps-2 col-5 col-sm-2 border border-2 border-secondary-subtle rounded", style:"height: 35px", id: "amount_input", data: { original_value: form.object.amount.present? ? form.object.amount.to_s.gsub(/\D/, "") : ""
-    }  %>
+    <%= form.text_field :amount, required: true,
+        class: "ps-1 col-5 col-md-2 border border-2 border-secondary-subtle rounded",
+        style:"height: 35px" %>
   </div>
 
   <div>
     <% if action_name == "new" %>
-      <%= form.submit "Ingresar", class: "btn btn-info col-4 col-sm-1" %>
+      <%= form.submit "Ingresar", class: "btn btn-info col-4 col-sm-3 col-md-2 col-lg-1" %>
       <div class="py-2">
-        <%= link_to "Regresar", deposits_path(from_month: params[:from_month], to_month: params[:to_month]), class: "btn btn-light border border-2 btn-ancho col-4 col-sm-1" %>
+        <%= link_to "Regresar", deposits_path(from_month: params[:from_month], to_month: params[:to_month]), class: "btn btn-light border border-2 btn-ancho col-4 col-sm-3 col-md-2 col-lg-1" %>
       </div>
     <% else %>
-      <%= form.submit "Actualizar", class: "btn btn-info col-4 col-sm-1" %>
+      <%= form.submit "Actualizar", class: "btn btn-info col-4 col-sm-3 col-md-2 col-lg-1" %>
       <div class="py-2">
-        <%= link_to "Regresar", deposits_path(from_month: params[:from_month], to_month: params[:to_month]), class: "btn btn-light border border-2 btn-ancho col-4 col-sm-1" %>
+        <%= link_to "Regresar", deposits_path(from_month: params[:from_month], to_month: params[:to_month]), class: "btn btn-light border border-2 btn-ancho col-4 col-sm-3 col-md-2 col-lg-1" %>
       </div>
      <% end %>
   </div>
 
 <% end %>
+</div>
+
 
 <script>
   function initDepositFormScript() {
-    // === CAMPOS DE FECHA DEPENDIENTES DEL RADIO ===
     const dateFields = document.getElementById("date_fields");
     const tipoIngresoRadios = document.querySelectorAll("input[name='deposit[tipo_ingreso]']");
+    const amountInput = document.getElementById("amount_input");
 
     if (dateFields && tipoIngresoRadios.length > 0 && !dateFields.dataset.listenerAdded) {
-      console.log("Escuchando en RADIO");
-      
-      // Previene registrar múltiples veces
       dateFields.dataset.listenerAdded = true;
 
-      function toggleDateFields() {
-        const selectedRadio = Array.from(tipoIngresoRadios).find(radio => radio.checked);
-        const tipo = selectedRadio ? selectedRadio.value : null;
+      const mesSelect = dateFields.querySelector('[data-deposit-target="mes"]');
+      const anoSelect = dateFields.querySelector('[data-deposit-target="ano"]');
 
-        dateFields.style.display = tipo === "ingreso_comun" ? "block" : "none";
+      function toggleDateFields() {
+        const selected = Array.from(tipoIngresoRadios).find(r => r.checked)?.value;
+        const isComun = selected === "ingreso_comun";
+        dateFields.style.display = isComun ? "block" : "none";
+
+        if (mesSelect && anoSelect) {
+          mesSelect.required = isComun;
+          anoSelect.required = isComun;
+        }
       }
 
-      tipoIngresoRadios.forEach(radio => {
-        radio.addEventListener("change", toggleDateFields);
-      });
-
+      tipoIngresoRadios.forEach(radio => radio.addEventListener("change", toggleDateFields));
       toggleDateFields();
     }
 
-    // === CANTIDAD (AMOUNT) ===
-    const amountInput = document.getElementById("amount_input");
-
     if (amountInput && !amountInput.dataset.listenerAdded) {
-      console.log("Escuchando en CANTIDAD");
-
       amountInput.dataset.listenerAdded = true;
 
-      const formatCL = (value) => {
-        const raw = value.replace(/\D/g, ""); // Solo números
-        return new Intl.NumberFormat("es-CL", {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0
-        }).format(raw);
+      const formatCL = value => {
+        const raw = value.replace(/\D/g, "");
+        return new Intl.NumberFormat("es-CL", { minimumFractionDigits: 0 }).format(raw);
       };
 
       if (amountInput.value) {
-        const rawValue = amountInput.value.replace(/\D/g, "");
-        amountInput.dataset.originalValue = rawValue;
-        amountInput.value = formatCL(rawValue);
+        const raw = amountInput.value.replace(/\D/g, "");
+        amountInput.dataset.originalValue = raw;
+        amountInput.value = formatCL(raw);
       }
 
       amountInput.addEventListener("input", function () {
-        const rawValue = this.value.replace(/\D/g, "");
-        this.dataset.originalValue = rawValue;
-        this.value = formatCL(rawValue);
+        const raw = this.value.replace(/\D/g, "");
+        this.dataset.originalValue = raw;
+        this.value = formatCL(raw);
       });
 
-      if (amountInput.form) {
-        amountInput.form.addEventListener("submit", function () {
-          amountInput.value = amountInput.dataset.originalValue;
-        });
-      }
+      amountInput.form?.addEventListener("submit", function () {
+        amountInput.value = amountInput.dataset.originalValue;
+      });
     }
   }
 

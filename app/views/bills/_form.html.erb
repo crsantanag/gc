@@ -6,8 +6,11 @@
 
   <% if bill.errors.any? %>
     <div style="color: red">
-      <h2><%= pluralize(bill.errors.count, "error") %> prohibited this bill from being saved:</h2>
-
+      <% if bill.errors.count == 1 %>
+        <h4>Se encontró <%= bill.errors.count %> error </h4>
+      <% else %>
+        <h4>Se encontraron <%= bill.errors.count %> errores </h4>
+      <% end %>
       <ul>
         <% bill.errors.each do |error| %>
           <li><%= error.full_message %></li>

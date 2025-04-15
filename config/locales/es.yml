@@ -32,6 +32,9 @@ es:
           ingreso_comun: "Gastos comunes"
           ingreso_extraordinario: "Ingresos extraordinarios"
           ingreso_otro: "Otros ingresos"
+        amount: "Cantidad"
+      bill:
+        amount: "Cantidad"
   date:
     formats:
       default: "%d/%m/%Y"

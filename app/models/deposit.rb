@@ -10,6 +10,9 @@ class Deposit < ApplicationRecord
 
   validates :mes, :ano, presence: true, if: -> { tipo_ingreso == "ingreso_comun" }
 
+  validates :amount, numericality: { only_integer: true, greater_than: 0 }
+
+
   MONTHS = [
     [ "Enero", 1 ],
     [ "Febrero", 2 ],

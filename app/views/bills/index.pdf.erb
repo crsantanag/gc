@@ -31,11 +31,11 @@
             <td style="text-align: left; font-size: 14px"><%= bill.comment %></td>
             <td style="text-align: left; font-size: 14px">
               <% case bill.tipo_egreso
-                 when "egreso_remuneracion"  then label = "Remuneración"
-                 when "egreso_util_aseo"     then label = "Útil aseo"
-                 when "egreso_gasto_basico"  then label = "Gasto básico"
-                 when "egreso_mantencion"    then label = "Mantención"
-                 else label = "Otro"
+                 when "egreso_remuneracion"  then label = "Remuneraciones"
+                 when "egreso_util_aseo"     then label = "Útiles aseo"
+                 when "egreso_gasto_basico"  then label = "Gastos básicos"
+                 when "egreso_mantencion"    then label = "Mantenciones"
+                 else label = "Otros gastos"
               end %>
               <%= label %>
             </td>
@@ -46,6 +46,11 @@
             </td>
           </tr>
         <% end %>
+        <tr>
+          <td colspan="4"> 
+            <div style="width: 100%; height: 1px; background-color: #000; margin-top: 5px; margin-bottom: 5px"></div>
+          </td>
+        </tr>
 
         <!-- Subtotal mensual -->
         <tr>
@@ -58,17 +63,9 @@
   <% end %>
 
   <!-- Total general al final de todo -->
-  <table style="width: 90%; border-collapse: collapse; font-size: 12px; margin-top: 30px;">
-
-    <tr>
-      <td colspan="4">
-        <div style="width: 100%; border-bottom: 1px solid #000; margin-top: 5px; margin-bottom: 2px;"></div>
-        <div style="width: 100%; border-bottom: 1px solid #000; margin-bottom: 5px"></div>
-      </td>
-    </tr>  
-    <tr>
-      <td colspan="3" style="text-align: right; font-size: 14px; margin-top: 5px"><strong>TOTAL GENERAL</strong></td>
-      <td style="text-align: right; font-size: 14px"><strong><%= number_to_currency(total_general, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></strong></td>
-    </tr>
-  </table>
+  <div style="width: 90%; border-bottom: 1px solid #000; margin-top: 5px; margin-bottom: 2px;"></div>
+  <div style="width: 90%; border-bottom: 1px solid #000; margin-bottom: 5px"></div>
+  <div style="font-size: 14px; margin-top: 5px">
+      <strong>TOTAL GENERAL <%= number_to_currency(total_general, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></strong>
+  </div>
 <% end %>

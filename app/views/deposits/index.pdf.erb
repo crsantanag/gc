@@ -10,7 +10,7 @@
 
 <h1>Ingresos</h1>
 
-<% if @deposits_paths.count == 0 %>
+<% if @deposits.count == 0 %>
   <h2>No existen egresos registrados</h2>
 <% else %>
   <% total_general = 0 %>
@@ -59,10 +59,12 @@
 
         <% tipo_totales[deposit.tipo_ingreso] += deposit.amount %>
         <% total_depto += deposit.amount %>
+
+        <% total_general += deposit.amount %>
       <% end %>
 
       <tr>
-        <td colspan="4">
+        <td colspan="4"> 
           <div style="width: 100%; height: 1px; background-color: #000; margin-top: 5px; margin-bottom: 5px"></div>
         </td>
       </tr>
@@ -95,5 +97,10 @@
     <div class="page-break"></div>
   <% end %>
 <% end %>
-
+  <!-- Total general al final de todo -->
+  <div style="width: 90%; border-bottom: 1px solid #000; margin-top: 50px; margin-bottom: 2px;"></div>
+  <div style="width: 90%; border-bottom: 1px solid #000; margin-bottom: 5px"></div>
+  <div style="font-size: 14px; margin-top: 5px">
+      <strong>TOTAL GENERAL <%= number_to_currency(total_general, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></strong>
+  </div>
 <% end %>

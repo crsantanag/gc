@@ -72,6 +72,7 @@
 
 <div data-controller="confirm-delete-modal">
 
+  <% total_general = 0 %>
   <div class="table-responsive">
       <% grouping = params[:grouping] || "by_apartment_date" %>
 
@@ -99,7 +100,7 @@
               <% deposits.group_by(&:tipo_ingreso).each do |tipo, tipo_deposits| %>
                 <tr class="table-light">
                   <td colspan="5" class="fw-bold"> 
-                    <p><strong>Tipo de ingreso:</strong> <%= nombre_tipo_ingreso(tipo) %></p>
+                    <p><strong> <%= nombre_tipo_ingreso(tipo) %> </strong> </p>
                   </td>
                 </tr>
                 <% tipo_deposits.each do |deposit| %>
@@ -109,20 +110,18 @@
                     </td>
                     <td class="text-start"><%= deposit.comment %></td>
                     <td class="text-start">
-                      <% case deposit.tipo_ingreso %>
-                        <% when "ingreso_comun" %>
-                          <% if deposit.mes.present? && deposit.ano.present? %>
-                            <%= Constants::MONTHS_NAMES[deposit.mes - 1] %>/<%= deposit.ano %>
-                          <% else %>
-                            Gastos comunes
-                          <% end %>
-                        <% when "ingreso_extraordinario" %>
-                            Ingreso extraordinario
+                      <% if deposit.tipo_ingreso == "ingreso_comun"%>
+                        <% if deposit.mes.present? && deposit.ano.present? %>
+                          <%= tipo_ingreso_humano(deposit.tipo_ingreso) %> / <%= Constants::MONTHS_NAMES[deposit.mes - 1] %>/<%= deposit.ano %>
+                          <%= Constants::MONTHS_NAMES[deposit.mes - 1] %>/<%= deposit.ano %>
                         <% else %>
-                            Otros ingresos
+                          <%= tipo_ingreso_humano(deposit.tipo_ingreso) %> / ** NO PRESENTE **
+                        <% end %>
+                      <% else %>
+                        <%= tipo_ingreso_humano(deposit.tipo_ingreso) %>
                       <% end %>
                     </td>
-                    <td class="text-end"><%= number_to_currency(deposit.amount, unit: "$", delimiter: ".", precision: 0) %></td>
+                    <td class="text-end"><%= number_to_currency(deposit.amount, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></td>
 
                     <td class="text-center">
                       <!-- Botón invisible real -->
@@ -144,12 +143,14 @@
                     </td>
 
                   </tr>
+                  <% total_general += deposit.amount %>
                 <% end %>
               <% end %>
             </tbody>
           </table>
         <% end %>
-
+        <br>
+        
       <% elsif grouping == "by_month" %>
 
         <% grouped = @deposits.order("date ASC").group_by { |d| d.date.beginning_of_month } %>
@@ -187,13 +188,15 @@
                     <% end %>
                   </td>
                   <td class="text-end">
-                    <%= number_to_currency(deposit.amount, unit: "$", delimiter: ".", precision: 0) %>
+                    <%= number_to_currency(deposit.amount, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %>
                   </td>
                 </tr>
+                <% total_general += deposit.amount %>
               <% end %>
             </tbody>
           </table>
         <% end %>
+        <br>
 
       <% else %> <%# default: by_apartment_date %>
 
@@ -234,7 +237,7 @@
                       Otros ingresos
                     <% end %>
                   </td>
-                  <td class="text-end"><%= number_to_currency(deposit.amount, unit: "$", delimiter: ".", precision: 0) %></td>
+                  <td class="text-end"><%= number_to_currency(deposit.amount, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></td>
 
                   <td class="text-center">
                     <!-- Botón invisible real -->
@@ -259,6 +262,7 @@
 
                 <% tipo_totales[deposit.tipo_ingreso] += deposit.amount %>
                 <% total_depto += deposit.amount %>
+                <% total_general += deposit.amount %>
               <% end %>
 
               <% tipo_totales.each do |tipo, suma| %>
@@ -276,8 +280,18 @@
               </tr>
             </tbody>
           </table>
+          <br>
         <% end %>
 
+      <% end %>
+
+      <% if total_general > 0 %>
+        <div class="mb-3">
+          <h4 class="text-start">
+            TOTAL GENERAL: <%= number_to_currency(total_general, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %>
+          </h4>
+          <br>
+        </div>
       <% end %>
       <br>
   </div>

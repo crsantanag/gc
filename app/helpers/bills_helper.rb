@@ -5,7 +5,7 @@ module BillsHelper
       "egreso_util_aseo"    => "Útiles de aseo",
       "egreso_gasto_basico" => "Gastos básicos",
       "egreso_mantencion"   => "Mantenciones",
-      "egreso_otro"         => "Otros"
+      "egreso_otro"         => "Otros gastos"
     }[tipo] || tipo.to_s.humanize
   end
 end

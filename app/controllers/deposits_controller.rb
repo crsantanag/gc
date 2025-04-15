@@ -88,6 +88,7 @@ class DepositsController < ApplicationController
         format.html { redirect_to filtered_redirect }
         format.json { render :show, status: :ok, location: @deposit }
       else
+        @apartments = current_user.apartments
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @deposit.errors, status: :unprocessable_entity }
       end
