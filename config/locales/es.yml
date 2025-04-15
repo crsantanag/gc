@@ -7,6 +7,8 @@ es:
     sessions:
       signed_in: "SESIÓN INICIADA CORRECTAMENTE"
       signed_out: "SESIÓN CERRADA CORRECTAMENTE"
+    registrations:
+      updated: "CUENTA ACTUALIZADA"
     failure:
       user:
         not_found_in_database: "eMAIL o CONTRASEÑA INVÁLIDO"
@@ -44,7 +46,4 @@ es:
     abbr_month_names: [nil, "ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
     day_names: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"]
     abbr_day_names: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"]
-    order:
-      - day
-      - month
-      - year
+    order: [ :day, :month, :year ]
