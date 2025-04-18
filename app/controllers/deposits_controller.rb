@@ -3,6 +3,16 @@ class DepositsController < ApplicationController
 
   before_action :set_deposit, only: %i[ show edit update destroy ]
 
+  def import
+    if params[:file].present?
+      ImportDepositsFromExcel.new(params[:file]).call
+      redirect_to deposits_path, notice: "IMPORTACIÓN EXITOSA"
+    else
+      redirect_to deposits_path, alert: "DEBE SELECCIONAR UN ARCHIVO"
+    end
+  end
+
+
   # GET /deposits or /deposits.json
   def index
     # Año ya lo tengo definido
@@ -15,10 +25,13 @@ class DepositsController < ApplicationController
     to_month = 12 unless (1..12).include?(to_month)
 
     @from_date = Date.new(year, from_month, 1)
-    @to_date = Date.new(year, to_month, -1) # úl
+    @to_date = Date.new(year, to_month, -1)
 
-    @deposits = current_user.deposits.includes(:apartment).where(date: @from_date..@to_date).order(:date)
-    @deposits_by_month = @deposits.group_by { |b| b.date.beginning_of_month }
+    @deposits = current_user.deposits.where(date: @from_date..@to_date).order(:date)
+
+    base_scope = current_user.deposits.includes(:apartment).where(ano: year, mes: from_month..to_month)
+    @deposits_by_ano_mes = base_scope.joins(:apartment).order("apartments.number ASC, deposits.mes ASC")
+    @deposits_by_month = base_scope.joins(:apartment).order("deposits.mes ASC, apartments.number ASC")
 
     respond_to do |format|
       format.html

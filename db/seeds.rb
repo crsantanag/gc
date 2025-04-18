@@ -31,52 +31,52 @@ puts "Id del administrador creado: #{admin.id}"
 admin_id = admin.id
 
 Apartment.create!(
-  number: "D101",
+  number: "101",
   description: "Verónica del Valle",
   user_id: admin_id
 )
 Apartment.create!(
-  number: "D102",
+  number: "102",
   description: "Jaime Alvarado",
   user_id: admin_id
 )
 Apartment.create!(
-  number: "D201",
+  number: "201",
   description: "Rosa Alarcón",
   user_id: admin_id
 )
 Apartment.create!(
-  number: "D202",
+  number: "202",
   description: "",
   user_id: admin_id
 )
 Apartment.create!(
-  number: "D301",
+  number: "301",
   description: "Carlos Santana",
   user_id: admin_id
 )
 Apartment.create!(
-  number: "D302",
+  number: "302",
   description: "Máximo Fierro",
   user_id: admin_id
 )
 Apartment.create!(
-  number: "D401",
+  number: "401",
   description: "Paulina Díaz",
   user_id: admin_id
 )
 Apartment.create!(
-  number: "D402",
+  number: "402",
   description: "",
   user_id: admin_id
 )
 Apartment.create!(
-  number: "D501",
+  number: "501",
   description: "",
   user_id: admin_id
 )
 Apartment.create!(
-  number: "D502",
+  number: "502",
   description: "",
   user_id: admin_id
 )

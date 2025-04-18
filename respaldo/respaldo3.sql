@@ -287,9 +287,8 @@ COPY public.bills (id, date, tipo_egreso, comment, amount, user_id, created_at, 
 
 COPY public.deposits (id, date, tipo_ingreso, comment, amount, mes, ano, user_id, apartment_id, created_at, updated_at) FROM stdin;
 5	2025-04-14	1	SC	40000	1	2025	3	21	2025-04-14 03:18:06.162487	2025-04-14 03:18:06.162487
+6	2025-04-14	1	SC	40000	2	2025	3	21	2025-04-14 03:18:40.871777	2025-04-14 03:18:40.871777
 7	2025-04-14	2	Cuota 1/2 extraordinaria	250000	\N	\N	3	21	2025-04-14 03:19:16.972155	2025-04-14 03:19:16.972155
-8	2025-04-14	2	Cuota 2/2 Ingreso extraordinario	250000	\N	\N	3	21	2025-04-14 03:50:33.609699	2025-04-14 04:38:32.839109
-6	2025-04-14	1	SC	40000	2	2025	3	21	2025-04-14 03:18:40.871777	2025-04-14 04:40:16.928093
 \.
 
 
@@ -311,7 +310,7 @@ COPY public.schema_migrations (version) FROM stdin;
 --
 
 COPY public.users (id, email, encrypted_password, reset_password_token, reset_password_sent_at, remember_created_at, created_at, updated_at, name_community, type_community, saldo_inicial, name, role) FROM stdin;
-3	carlos.santana@gmail.com	$2a$12$w51a0gcOLV4vrsdvGnYtGOzCKZn0V/RxHzXQt7SV0sRHFScPIGSw2	\N	\N	\N	2025-04-14 03:00:52.188486	2025-04-15 20:33:15.563121	Edificio La Providencia	Departamento	0	Carlos Santana	1
+3	carlos.santana@gmail.com	$2a$12$zHx1cJbNRs3Q8W3/Nc4gseeba3mQbVp5nr9btbPPKhm86udD8SG/C	\N	\N	\N	2025-04-14 03:00:52.188486	2025-04-14 03:00:52.188486	Edificio La Providencia	Departamento	0	Carlos Santana	1
 \.
 
 
@@ -333,7 +332,7 @@ SELECT pg_catalog.setval('public.bills_id_seq', 2, true);
 -- Name: deposits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: mysite
 --
 
-SELECT pg_catalog.setval('public.deposits_id_seq', 9, true);
+SELECT pg_catalog.setval('public.deposits_id_seq', 7, true);
 
 
 --

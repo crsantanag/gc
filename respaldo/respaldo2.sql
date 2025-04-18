@@ -311,7 +311,7 @@ COPY public.schema_migrations (version) FROM stdin;
 --
 
 COPY public.users (id, email, encrypted_password, reset_password_token, reset_password_sent_at, remember_created_at, created_at, updated_at, name_community, type_community, saldo_inicial, name, role) FROM stdin;
-3	carlos.santana@gmail.com	$2a$12$w51a0gcOLV4vrsdvGnYtGOzCKZn0V/RxHzXQt7SV0sRHFScPIGSw2	\N	\N	\N	2025-04-14 03:00:52.188486	2025-04-15 20:33:15.563121	Edificio La Providencia	Departamento	0	Carlos Santana	1
+3	carlos.santana@gmail.com	$2a$12$RtsMEHURu3cWY5oIBd/MSOaGkIZj/8Fe6stNVrYGG6ZsqjI/doQ7G	\N	\N	\N	2025-04-14 03:00:52.188486	2025-04-15 20:33:15.563121	Edificio La Providencia	Departamento	0	Carlos Santana	1
 \.
 
 

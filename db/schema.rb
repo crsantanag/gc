@@ -27,7 +27,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_09_155933) do
     t.date "date"
     t.integer "tipo_egreso"
     t.string "comment"
-    t.integer "amount"
+    t.integer "amount", default: 0
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -38,7 +38,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_09_155933) do
     t.date "date"
     t.integer "tipo_ingreso"
     t.string "comment"
-    t.integer "amount"
+    t.integer "amount", default: 0
     t.integer "mes"
     t.integer "ano"
     t.bigint "user_id", null: false
