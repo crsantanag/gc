@@ -18,7 +18,7 @@ export default class extends Controller {
 
     this.toggleDateFields() // inicial
   }
-
+ 
   toggleDateFields() {
     const selected = document.querySelector("input[name='deposit[tipo_ingreso]']:checked")?.value
     const isComun = selected === "ingreso_comun"

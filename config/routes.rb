@@ -13,7 +13,11 @@ Rails.application.routes.draw do
 
   resources :users, except: [ :new, :create ]  # <-- para no duplicar /users/new (sign_up)
 
-  resources :bills
+  resources :bills do
+    collection do
+      post :import
+    end
+  end
 
   resources :deposits do
     collection do

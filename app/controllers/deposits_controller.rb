@@ -4,14 +4,23 @@ class DepositsController < ApplicationController
   before_action :set_deposit, only: %i[ show edit update destroy ]
 
   def import
-    if params[:file].present?
-      ImportDepositsFromExcel.new(params[:file]).call
-      redirect_to deposits_path, notice: "IMPORTACIÓN EXITOSA"
-    else
-      redirect_to deposits_path, alert: "DEBE SELECCIONAR UN ARCHIVO"
+    if params[:file].blank?
+      flash[:alert] = "DEBE SELECCIONAR UN ARCHIVO"
+      redirect_to deposits_path
+      return
     end
-  end
 
+    importer = ImportDepositsFromExcel.new(params[:file])
+    importer.call
+
+    if importer.errors.any?
+      flash[:alert] = "#{importer.failed.count} REGISTROS NO IMPORTADOS"
+      flash[:import_errors] = importer.errors
+    else
+      flash[:notice] = "IMPORTACIÓN COMPLETADA EXITOSAMENTE"
+    end
+    redirect_to deposits_path
+  end
 
   # GET /deposits or /deposits.json
   def index

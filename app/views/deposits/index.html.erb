@@ -171,14 +171,14 @@
               <% tipo_totales.each do |tipo, suma| %>
                 <tr class="table-light">
                   <td colspan="3" class="text-end fw-bold"> <%= nombre_tipo_ingreso(tipo) %> </td>
-                  <td class="text-end fw-bold"><%= number_to_currency(suma, unit: "$", delimiter: ".", precision: 0) %></td>
+                  <td class="text-end fw-bold"><%= number_to_currency(suma, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></td>
                   <td></td>
                 </tr>
               <% end %>
 
               <tr class="table-secondary">
                 <td colspan="3" class="text-end fw-bold">TOTAL</td>
-                <td class="text-end fw-bold"><%= number_to_currency(total_depto, unit: "$", delimiter: ".", precision: 0) %></td>
+                <td class="text-end fw-bold"><%= number_to_currency(total_depto, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></td>
                 <td></td>
               </tr>
             </tbody>
@@ -188,10 +188,7 @@
 
       <% elsif grouping == "by_apartment_month" %>
 
-        <% grouped = @deposits_by_ano_mes.joins(:apartment)
-                              .order("apartments.number ASC, deposits.mes ASC, deposits.tipo_ingreso ASC")
-                              .group_by(&:apartment)
-                              .sort_by { |a, _| a.number } %>
+        <% grouped = @deposits_by_ano_mes.group_by(&:apartment).sort_by { |a, _| a.number } %>
 
         <% grouped.each do |apartment, deposits| %>
           <h3 class="mt-4">Departamento <%= apartment.number %></h3>
@@ -212,7 +209,7 @@
 
               <% deposits.group_by(&:tipo_ingreso).each do |tipo, tipo_deposits| %>
 
-                <% tipo_deposits.each do |deposit| %>
+                <% tipo_deposits.sort_by { |d| [d.ano, d.mes] }.each do |deposit| %>
                   <tr>
                     <td>
                       <%= link_to deposit.date.strftime("%d-%m-%Y"), edit_deposit_path(deposit, request.query_parameters), data: { turbo: false }, class: "btn btn-primary btn-sm" %>
@@ -260,14 +257,14 @@
               <% tipo_totales.each do |tipo, suma| %>
                 <tr class="table-light">
                   <td colspan="3" class="text-end fw-bold"> <%= nombre_tipo_ingreso(tipo) %> </td>
-                  <td class="text-end fw-bold"><%= number_to_currency(suma, unit: "$", delimiter: ".", precision: 0) %></td>
+                  <td class="text-end fw-bold"><%= number_to_currency(suma, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></td>
                   <td></td>
                 </tr>
               <% end %>
 
               <tr class="table-secondary">
                 <td colspan="3" class="text-end fw-bold">TOTAL</td>
-                <td class="text-end fw-bold"><%= number_to_currency(total_depto, unit: "$", delimiter: ".", precision: 0) %></td>
+                <td class="text-end fw-bold"><%= number_to_currency(total_depto, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></td>
                 <td></td>
               </tr>
 

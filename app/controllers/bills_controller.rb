@@ -3,6 +3,14 @@ class BillsController < ApplicationController
 
   before_action :set_bill, only: %i[ show edit update destroy ]
 
+  def import
+    if params[:file].present?
+      ImportBillsFromExcel.new(params[:file]).call
+      redirect_to deposits_path, notice: "IMPORTACIÓN EXITOSA"
+    else
+      redirect_to deposits_path, alert: "DEBE SELECCIONAR UN ARCHIVO"
+    end
+  end
   # GET /bills or /bills.json
   def index
     # Año ya lo tengo definido
