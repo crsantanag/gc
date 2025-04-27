@@ -13,7 +13,7 @@ WickedPdf.configure do |config|
   # one of the wkhtmltopdf-binary family of gems.
   if Rails.env.production?
     # En producción (Render), usamos el wkhtmltopdf de la gema wkhtmltopdf-binary
-    config.exe_path = WickedPdf.binary_path
+    config.exe_path = "/usr/bin/wkhtmltopdf"
   else
     # En desarrollo (tu máquina local)
     config.exe_path = "/home/csantana/.rbenv/shims/wkhtmltopdf"
