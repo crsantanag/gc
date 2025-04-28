@@ -39,8 +39,8 @@ class DepositsController < ApplicationController
     @deposits = current_user.deposits.where(date: @from_date..@to_date).order(:date)
 
     base_scope = current_user.deposits.includes(:apartment).where(ano: year, mes: from_month..to_month)
-    @deposits_by_ano_mes = base_scope.joins(:apartment).order("apartments.number ASC, deposits.mes ASC")
-    @deposits_by_month = base_scope.joins(:apartment).order("deposits.mes ASC, apartments.number ASC")
+    @deposits_by_ano_mes = base_scope.joins(:apartment).order("apartments.number ASC, deposits.ano ASC, deposits.mes ASC, deposits.date ASC, deposits.tipo_ingreso ASC")
+    @deposits_by_month = base_scope.joins(:apartment).order("deposits.mes ASC, apartments.number ASC, deposits.date ASC")
 
     respond_to do |format|
       format.html
@@ -79,8 +79,8 @@ class DepositsController < ApplicationController
     @deposit.user_id = current_user.id
 
     if @deposit.tipo_ingreso != "ingreso_comun"
-       @deposit.mes = nil
-       @deposit.ano = nil
+      @deposit.mes = @deposit.date.month
+      @deposit.ano = @deposit.date.year
     end
 
     respond_to do |format|
@@ -100,8 +100,8 @@ class DepositsController < ApplicationController
     @deposit.assign_attributes(deposit_params)
 
     if @deposit.tipo_ingreso != "ingreso_comun"
-       @deposit.mes = nil
-       @deposit.ano = nil
+       @deposit.mes = @deposit.date.month
+       @deposit.ano = @deposit.date.year
     end
 
     respond_to do |format|

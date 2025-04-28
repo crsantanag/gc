@@ -15,11 +15,12 @@
 <% else %>
   <% total_general = 0 %>
 
-<% grouped_deposits = @deposits .includes(:apartment)
-                                .group_by(&:apartment)
-                                .sort_by { |apartment, _| apartment.number.to_i } %>
+  <% grouped = @deposits.joins(:apartment)
+                        .order("deposits.date ASC, deposits.tipo_ingreso ASC, deposits.ano ASC, deposits.mes ASC")
+                        .group_by(&:apartment)
+                        .sort_by { |apartment, _| apartment.number } %>
 
-<% grouped_deposits.each_with_index do |(apartment, deposits), index| %>
+  <% grouped.each_with_index do |(apartment, deposits), index| %>
 
   <h2> <%= current_user.type_community.capitalize %> <%= apartment.number %> - <%= apartment.description %> </h2>
 
@@ -98,7 +99,7 @@
   </div>
 
   <%# Salto de página después de cada departamento excepto el último %>
-  <% unless index == grouped_deposits.size - 1 %>
+  <% unless index == grouped.size - 1 %>
     <div class="page-break"></div>
   <% end %>
 <% end %>

@@ -2,9 +2,9 @@
 
 <style>
 .table-fixed {
-    table-layout: fixed;
+    table-layout: fixed; 
     width: 100%;}
-.table-fixed tbody tr {
+.table-fixed tbody tr { 
   height: 1px; /* lo más chico posible, se ajustará al contenido */
 }
 .table-fixed th,
@@ -53,7 +53,7 @@
       <%= label_tag :grouping, "Agrupar por" %><br>
       <div class="form-check">
         <%= radio_button_tag :grouping, "by_apartment_date", params[:grouping] == "by_apartment_date" || params[:grouping].blank?, id: "grouping_by_apartment_date", class: "form-check-input border border-2 border-secondary-subtle rounded" %>
-        <%= label_tag :grouping_by_apartment_date, "Departamento / Fecha de ingreso", class: "form-check-label" %>
+        <%= label_tag :grouping_by_apartment_date, "Departamento / Fecha del ingreso", class: "form-check-label" %>
       </div>
       <div class="form-check mt-2">
         <%= radio_button_tag :grouping, "by_apartment_month", params[:grouping] == "by_apartment_month", id: "grouping_by_apartment_month", class: "form-check-input border border-2 border-secondary-subtle rounded" %>
@@ -102,12 +102,12 @@
       <% if grouping == "by_apartment_date" %>
 
         <% grouped = @deposits.joins(:apartment)
-                              .order("deposits.date ASC, deposits.created_at ASC")
+                              .order("deposits.date ASC, deposits.tipo_ingreso ASC,  deposits.ano ASC, deposits.mes ASC")
                               .group_by(&:apartment)
                               .sort_by { |apartment, _| apartment.number } %>
 
         <% grouped.each do |apartment, deposits| %>
-          <h3 class="mt-4">Departamento <%= apartment.number %></h3>
+          <h3> <%= current_user.type_community.capitalize %> <%= apartment.number %> - <%= apartment.description %> </h3>
 
           <table class="table table-bordered table-striped">
             <thead>
@@ -191,7 +191,7 @@
         <% grouped = @deposits_by_ano_mes.group_by(&:apartment).sort_by { |a, _| a.number } %>
 
         <% grouped.each do |apartment, deposits| %>
-          <h3 class="mt-4">Departamento <%= apartment.number %></h3>
+          <h3> <%= current_user.type_community.capitalize %> <%= apartment.number %> - <%= apartment.description %> </h3>
 
           <table class="table table-bordered table-striped">
             <thead>
@@ -207,9 +207,7 @@
               <% tipo_totales = Hash.new(0) %>
               <% total_depto = 0 %>
 
-              <% deposits.group_by(&:tipo_ingreso).each do |tipo, tipo_deposits| %>
-
-                <% tipo_deposits.sort_by { |d| [d.ano, d.mes] }.each do |deposit| %>
+              <% deposits.each do |deposit| %>
                   <tr>
                     <td>
                       <%= link_to deposit.date.strftime("%d-%m-%Y"), edit_deposit_path(deposit, request.query_parameters), data: { turbo: false }, class: "btn btn-primary btn-sm" %>
@@ -251,7 +249,7 @@
                   <% tipo_totales[deposit.tipo_ingreso] += deposit.amount %>
                   <% total_depto += deposit.amount %>
                   <% total_general += deposit.amount %>
-                <% end %>
+
               <% end %>
 
               <% tipo_totales.each do |tipo, suma| %>
@@ -293,6 +291,9 @@
               </tr>
             </thead>
             <tbody>
+              <% tipo_totales = Hash.new(0) %>
+              <% total_mes = 0 %>
+
               <% deposits.each do |deposit| %>
                 <tr>
                   <td>
@@ -322,18 +323,39 @@
                         form: { id: "deleteForm-#{deposit.id}" },
                         class: "btn btn-danger btn-sm d-none" do %>
                           <i class="fa-solid fa-trash"></i>
-                        <% end %>
-                      <!-- Botón visible que activa el modal -->
-                      <button type="button"
-                        class="btn btn-danger btn-sm"
-                        data-deposit-form="deleteForm-<%= deposit.id %>"
-                        data-action="click->confirm-delete-modal#showModal">
-                        <i class="fa-solid fa-trash"></i>
-                      </button>
-                    </td>
+                    <% end %>
+
+                    <!-- Botón visible que activa el modal -->
+                    <button type="button"
+                      class="btn btn-danger btn-sm"
+                      data-deposit-form="deleteForm-<%= deposit.id %>"
+                      data-action="click->confirm-delete-modal#showModal">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+
                 </tr>
                 <% total_general += deposit.amount %>
+                <% tipo_totales[deposit.tipo_ingreso] += deposit.amount %>
+                <% total_mes += deposit.amount %>
+
+
               <% end %>
+
+              <% tipo_totales.each do |tipo, suma| %>
+                <tr class="table-light">
+                  <td colspan="4" class="text-end fw-bold"> <%= nombre_tipo_ingreso(tipo) %> </td>
+                  <td class="text-end fw-bold"><%= number_to_currency(suma, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></td>
+                  <td></td>
+                </tr>
+              <% end %>
+
+              <tr class="table-secondary">
+                <td colspan="4" class="text-end fw-bold">TOTAL</td>
+                <td class="text-end fw-bold"><%= number_to_currency(total_mes, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %></td>
+                <td></td>
+              </tr>
+
             </tbody>
           </table>
         <% end %>

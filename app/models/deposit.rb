@@ -8,10 +8,11 @@ class Deposit < ApplicationRecord
           :ingreso_extraordinario,
           :ingreso_otro ]
 
+  before_validation :set_month_and_year_from_date, if: -> { tipo_ingreso != "ingreso_comun" }
+
   validates :mes, :ano, presence: true, if: -> { tipo_ingreso == "ingreso_comun" }
 
   validates :amount, numericality: { only_integer: true, greater_than: 0 }
-
 
   MONTHS = [
     [ "Enero", 1 ],
@@ -63,5 +64,14 @@ class Deposit < ApplicationRecord
     end
 
     redirect_to deposits_path
+  end
+
+  private
+
+  def set_month_and_year_from_date
+    if date.present?
+      self.mes = date.month
+      self.ano = date.year
+    end
   end
 end
