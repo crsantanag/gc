@@ -9,7 +9,8 @@
     <%= formato_monto(@balance_inicial || 0) %>
   </h4>
 
-  <% acumulado = @balance_inicial || 0 %>
+  <% acumulado         = @balance_inicial || 0 %>
+  <% acumulado_parcial = @balance_inicial || 0 %>
 
   <% if @balance_data.present? %>
 
@@ -27,8 +28,7 @@
           <th>FECHA</th>
           <th>COMENTARIO</th>
           <th>TIPO </th>
-          <th class="text-end">INGRESO</th>
-          <th class="text-end">EGRESO</th>
+          <th class="text-end">MONTO</th>
         </tr>
       </thead>
       <tbody>
@@ -53,9 +53,6 @@
                 <%= tipo_egreso_humano(r.tipo_egreso) %>
               <% end %>
             </td>
-            <% if r.is_a?(Bill)  || r.amount.negative? %>
-              <td>&nbsp;</td>
-            <% end %>
             <td class="text-end <%= 'text-danger' if r.is_a?(Bill) || r.amount.negative? %>">
               <%= number_to_currency(r.is_a?(Bill) ? -r.amount : r.amount, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %>
             </td>
@@ -69,13 +66,18 @@
         </tr>
         <tr class="fw-bold">
           <td colspan="3" class="border-0 text-end">Total egresos</td>
-          <td>&nbsp;</td>
           <td class="text-end"><%= formato_monto(-data[:egresos]) %></td>
         </tr>
         <tr class="fw-bold">
           <td colspan="3" class="border-0 text-end">Balance del mes</td>
-          <td>&nbsp;</td>
+
           <td class="text-end"><%= formato_monto(data[:ingresos] - data[:egresos]) %></td>
+        </tr>
+        <% acumulado_parcial += data[:ingresos] - data[:egresos]%>
+        <tr class="fw-bold">
+          <td colspan="3" class="border-0 text-end">Balance parcial acumulado</td>
+
+          <td class="text-end"><%= formato_monto(acumulado_parcial) %></td>
         </tr>
       </tbody>
     </table>
@@ -87,7 +89,7 @@
   <!-- Total general al final de todo -->
   <div class="mt-5">
     <h4>
-      BALANCE ANUAL 
+      Saldo final 
       <span class="<%= acumulado.negative? ? 'text-danger' : '' %>">
         <%= number_to_currency(acumulado, unit: "$", delimiter: ".", precision: 0, format: "%u%n") %>
       </span>

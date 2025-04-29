@@ -1,6 +1,5 @@
 require "roo"
 
-
 class ImportDepositsFromExcel
   attr_reader :successful, :failed, :errors
 

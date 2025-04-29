@@ -8,7 +8,7 @@
   .text-end { text-align: right; }
 </style>
 
-  <%= link_to "Registrar egreso", new_bill_path(request.query_parameters), class: "mb-3 col-6 col-sm-4 col-md-2 col-lg-2 btn btn-info" %>
+<%= link_to "Registrar egreso", new_bill_path(request.query_parameters), class: "mb-3 col-6 col-sm-4 col-md-2 col-lg-2 fs-5 btn btn-info" %>
 
 <h2> Detalle de egresos</h2>
 
@@ -82,12 +82,12 @@
     <!-- Título del grupo -->
     <% if params[:grouping] == "by_type" %>
       <% label = case month_date
-                when "egreso_remuneracion" then "Remuneraciones"
-                when "egreso_util_aseo"    then "Útiles de aseo"
-                when "egreso_gasto_basico" then "Gastos básicos"
-                when "egreso_mantencion"   then "Mantenciones"
-                when "egreso_otro"         then "Otros gastos"
-                else "Otros"
+                 when "egreso_remuneracion" then "Remuneraciones"
+                 when "egreso_util_aseo"    then "Útiles de aseo"
+                 when "egreso_gasto_basico" then "Gastos básicos"
+                 when "egreso_mantencion"   then "Mantenciones"
+                 when "egreso_otro"         then "Otros gastos"
+                 else "Otros"
       end %>
       <h4><%= label %></h4>
     <% else %>
@@ -101,7 +101,7 @@
             <th scope="col" class="w-10">FECHA</th>
             <th scope="col" class="w-40">COMENTARIO</th>
             <th scope="col" class="w-15">TIPO EGRESO</th>
-            <th scope="col" class="w-15 text-end">CANTIDAD</th>
+            <th scope="col" class="w-15 text-end">MONTO</th>
             <th scope="col" class="w-10 text-center">ACCIÓN</th>
           </tr>
         </thead>
@@ -188,8 +188,6 @@
       <br>
     </div>
   <% end %>
-
-
 
   <!-- Modal de confirmación -->
   <div class="modal fade"

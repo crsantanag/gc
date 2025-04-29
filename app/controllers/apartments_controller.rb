@@ -28,8 +28,8 @@ class ApartmentsController < ApplicationController
 
     respond_to do |format|
       if @apartment.save
-        flash[:notice] = "DEPARTAMENTO CREADO"
-        format.html { redirect_to @apartment }
+        flash[:notice] = "#{current_user.type_community.upcase} CREAD#{current_user.type_community.upcase[-1]}"
+        format.html { redirect_to apartments_path }
         format.json { render :show, status: :created, location: @apartment }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -42,8 +42,8 @@ class ApartmentsController < ApplicationController
   def update
     respond_to do |format|
       if @apartment.update(apartment_params)
-        flash[:notice] = "DEPARTAMENTO ACTUALIZADO"
-        format.html { redirect_to @apartment }
+        flash[:notice] = "#{current_user.type_community.upcase} ACTUALIZAD#{current_user.type_community.upcase[-1]}"
+        format.html { redirect_to apartments_path }
         format.json { render :show, status: :ok, location: @apartment }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -57,7 +57,7 @@ class ApartmentsController < ApplicationController
     @apartment.destroy!
 
     respond_to do |format|
-      flash[:notice] = "DEPARTAMENTO ELIMINADO"
+      flash[:notice] = "#{current_user.type_community.upcase} ELIMINAD#{current_user.type_community.upcase[-1]}"
       format.html { redirect_to apartments_path, status: :see_other }
       format.json { head :no_content }
     end

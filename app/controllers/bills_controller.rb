@@ -4,13 +4,24 @@ class BillsController < ApplicationController
   before_action :set_bill, only: %i[ show edit update destroy ]
 
   def import
-    if params[:file].present?
-      ImportBillsFromExcel.new(params[:file]).call
-      redirect_to deposits_path, notice: "IMPORTACIÓN EXITOSA"
-    else
-      redirect_to deposits_path, alert: "DEBE SELECCIONAR UN ARCHIVO"
+    if params[:file].blank?
+      flash[:alert] = "DEBE SELECCIONAR UN ARCHIVO"
+      redirect_to bills_path
+      return
     end
+
+    importer = ImportBillsFromExcel.new(params[:file])
+    importer.call
+
+    if importer.errors.any?
+      flash[:alert] = "#{importer.failed.count} REGISTROS NO IMPORTADOS"
+      flash[:import_errors] = importer.errors
+    else
+      flash[:notice] = "IMPORTACIÓN COMPLETADA EXITOSAMENTE"
+    end
+    redirect_to bills_path
   end
+
   # GET /bills or /bills.json
   def index
     # Año ya lo tengo definido
@@ -28,13 +39,19 @@ class BillsController < ApplicationController
     @bills = current_user.bills.where(date: @from_date..@to_date).order(date: :asc)
 
     @grouping = params[:grouping] ||= "by_month"
-    # <= esta línea agrega el valor por defecto
 
     case params[:grouping]
-    when "by_type"
-      @bills_by_month = @bills.group_by(&:tipo_egreso)
-    else # "by_month" o valor desconocido
+    when "by_month"
       @bills_by_month = @bills.group_by { |b| b.date.beginning_of_month }
+    else # by_type
+      orden_tipo_egreso = {
+        "egreso_remuneracion" => 1,
+        "egreso_util_aseo"    => 2,
+        "egreso_gasto_basico" => 3,
+        "egreso_mantencion"   => 4,
+        "egreso_otro"         => 5
+      }
+      @bills_by_month = @bills.group_by(&:tipo_egreso).sort_by { |tipo, _| orden_tipo_egreso[tipo] || 99 }
     end
 
     respond_to do |format|

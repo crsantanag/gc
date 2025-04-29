@@ -24,7 +24,8 @@ class PagesController < ApplicationController
         mes: month,
         ingresos: mes_ingresos.sum(&:amount),
         egresos: mes_egresos.sum(&:amount),
-        registros: (mes_ingresos + mes_egresos).sort_by(&:date)
+        registros: (mes_ingresos + mes_egresos).sort_by { |r| [ r.date, (r.try(:ano) || 0), (r.try(:mes) || 0) ] }
+
       }
     end
 

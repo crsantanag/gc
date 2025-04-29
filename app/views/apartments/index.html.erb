@@ -1,23 +1,78 @@
 <% content_for :title, "Apartments" %>
 
-<%= link_to "Crear ".html_safe + current_user.type_community.html_safe, new_apartment_path, class:"mb-3 fs-5 btn btn-info" %>
+<%= link_to "Registrar ".html_safe + current_user.type_community.downcase.html_safe, new_apartment_path, class:"mb-3 fs-5 btn btn-info" %>
 
 <div id="apartments">
+  <div data-controller="confirm-delete-modal">
 
-      <div class="table-responsive">
+    <div class="table-responsive">
       <table class="table table-bordered table-striped">
         <thead>
           <tr class="table-primary">
             <th class="text-center" scope="col">Número</th>
             <th scope="col">Nombre</th>
+            <th class="text-center" scope="col">ACCIÓN</th>
           </tr>
         </thead>
         <tbody>
           <% @apartments.each do |apartment| %>
-            <%= render "apartment", apartment: apartment %>
+            <tr class="table-light">
+              <td class="col-1 text-center" scope="row">
+                <%= link_to apartment.number, edit_apartment_path(apartment), data: { turbo: false }, class: "btn btn-primary btn-sm" %>
+              </td>
+              <td class="col-8 text-start" scope="row"> <%= apartment.description %> </td>
+              <td class="text-center">
+                <!-- Botón invisible real -->
+                <%= button_to apartment_path(apartment),
+                    method: :delete,
+                    data: { turbo: false },
+                    form: { id: "deleteForm-#{apartment.id}" },
+                    class: "btn btn-danger btn-sm d-none" do %>
+                      <i class="fa-solid fa-trash"></i>
+                    <% end %>
+
+                <!-- Botón visible que activa el modal -->
+                <button type="button"
+                        class="btn btn-danger btn-sm"
+                        data-deposit-form="deleteForm-<%= apartment.id %>"
+                        data-action="click->confirm-delete-modal#showModal">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
           <% end %>
         </tbody>
       </table>
-    </div> 
+    </div>
 
+    <!-- Modal de confirmación -->
+    <div class="modal fade"
+      id="confirmDeleteModal"
+      tabindex="-1"
+      aria-labelledby="confirmDeleteModalLabel"
+      aria-hidden="true"
+      data-confirm-delete-modal-target="modal">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmDeleteModalLabel">Confirma eliminación</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              ¿Estás seguro de querer eliminar este registro?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button"
+                      class="btn btn-danger"
+                      data-confirm-delete-modal-target="confirm"
+                      data-action="click->confirm-delete-modal#confirmDelete">
+                      Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+  </div>
 </div>
